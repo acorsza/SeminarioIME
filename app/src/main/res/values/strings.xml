@@ -1,3 +1,64 @@
 <resources>
-    <string name="app_name">Seminario IME</string>
+    <string name="app_name">IME Seminar</string>
+
+    <!-- Buttons -->
+    <string name="btn_login">Login</string>
+    <string name="btn_register">Register</string>
+    <string name="btn_save">Save </string>
+
+    <!-- Labels -->
+    <string name="lbl_welcome">Welcome to IME Seminar</string>
+    <string name="lbl_registration">Registration</string>
+    <string name="lbl_edit_account">Edit account info.</string>
+
+    <!-- Hint -->
+    <string name="hint_nusp">USP ID</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_name">Name</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="empty_fields_message">The following fields cannot be empty: </string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="auto_connect">Connect automatically next time</string>
+    <string name="registration_failed">Registration Failed</string>
+    <string name="registration_succeeded">Awesome</string>
+    <string name="account_created">Your account was successfully created.</string>
+    <string name="ok">OK</string>
+    <string name="seminars">Seminars</string>
+    <string name="account">Account Info</string>
+    <string name="edit_account">Edit account</string>
+    <string name="logoff">Logoff</string>
+    <string name="login_successful">Welcome to IME Seminar.</string>
+    <string name="login_failed">Login failed. Please check your credentials and connection.</string>
+
+    <!-- Error messages -->
+    <string name="ERROR_API_S001">An error occurred while adding a student. Error message: %s</string>
+    <string name="ERROR_API_S002">An error occurred while editing a student. Error message: %s</string>
+    <string name="ERROR_API_S003">An error occurred while deleting a student. Error message: %s </string>
+    <string name="ERROR_API_S004">An error occurred while getting a student. Error message: %s</string>
+    <string name="ERROR_API_S005">An error occurred while getting all students. Error message: %s</string>
+
+    <string name="ERROR_API_P001">An error occurred while adding a professor. Error message: %s</string>
+    <string name="ERROR_API_P002">An error occurred while editing a professor. Error message: %s</string>
+    <string name="ERROR_API_P003">An error occurred while deleting a professor. Error message: %s </string>
+    <string name="ERROR_API_P004">An error occurred while getting a professor. Error message: %s</string>
+    <string name="ERROR_API_P005">An error occurred while getting all professors. Error message: %s</string>
+
+    <string name="ERROR_API_SEM001">An error occurred while adding a seminar. Error message: %s</string>
+    <string name="ERROR_API_SEM002">An error occurred while editing a seminar. Error message: %s</string>
+    <string name="ERROR_API_SEM003">An error occurred while deleting a seminar. Error message: %s </string>
+    <string name="ERROR_API_SEM004">An error occurred while getting a seminar. Error message: %s</string>
+    <string name="ERROR_API_SEM005">An error occurred while getting all seminars. Error message: %s</string>
+
+
+    <string name="edit_account_failed">Edit account failed.</string>
+    <string name="edit_account_success">Account updated successfully.</string>
+
+
+    <!-- Roles -->
+    <string-array name="roles">
+        <item>Student</item>
+        <item>Professor</item>
+    </string-array>
 </resources>

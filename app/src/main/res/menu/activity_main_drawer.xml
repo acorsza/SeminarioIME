@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_seminars"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/seminars" />
+    </group>
+
+    <item android:title="@string/account">
+        <menu>
+            <item
+                android:id="@+id/nav_edit_account"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="@string/edit_account" />
+            <item
+                android:id="@+id/nav_logoff"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/logoff" />
+        </menu>
+    </item>
+
+</menu>
