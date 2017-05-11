@@ -24,8 +24,6 @@ import br.usp.ime.mac5743.ep1.seminarioime.R;
 
 public class BluetoothActivity extends AppCompatActivity {
 
-    /*  Um adaptador para conter os elementos da lista de dispositivos descobertos.
-      */
     ArrayAdapter<String> pairedAdapter;
     ArrayAdapter<String> nearAdapter;
     ListView lvPaired;
@@ -36,27 +34,13 @@ public class BluetoothActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bluetooth_activity);
 
-        /*  Esse trecho não é essencial, mas dá um melhor visual à lista.
-            Adiciona um título à lista de dispositivos pareados utilizando
-        o layout text_header.xml.
-        */
         lvPaired = (ListView) findViewById(R.id.bluetooth_paired_list);
         lvNear = (ListView) findViewById(R.id.bluetooth_near_list);
 
 
-        //LayoutInflater inflater = getLayoutInflater();
-        //View header = inflater.inflate(R.layout.bluetooth_activity, lv, false);
-        //((TextView) header.findViewById(R.id.paired_devices)).setText("\nDispositivos pareados\n");
-        //lv.addHeaderView(header, null, false);
-
-        /*  Usa o adaptador Bluetooth para obter uma lista de dispositivos pareados.
-         */
         final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
 
-        /*  Cria um modelo para a lista e o adiciona à tela.
-            Se houver dispositivos pareados, adiciona cada um à lista.
-         */
         pairedAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         nearAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         lvNear.setAdapter(nearAdapter);
@@ -121,15 +105,10 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     };
 
-    /*  Executado quando a Activity é finalizada.
-     */
     @Override
     protected void onDestroy() {
 
         super.onDestroy();
-
-        /*  Remove o filtro de descoberta de dispositivos do registro.
-         */
         unregisterReceiver(receiver);
     }
 }
