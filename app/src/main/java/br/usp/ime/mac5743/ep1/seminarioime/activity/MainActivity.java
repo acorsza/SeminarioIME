@@ -114,7 +114,6 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.seminar_add_failed), Toast.LENGTH_LONG).show();
                 }
-
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
