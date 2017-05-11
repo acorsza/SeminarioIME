@@ -70,8 +70,8 @@ public class SeminarCardListAdapter extends RecyclerView.Adapter<SeminarCardList
     @Override
     public SeminarViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cardview_seminar, viewGroup, false);
-        SeminarViewHolder wayViewHolder = new SeminarViewHolder(view, context, listSeminars);
-        return wayViewHolder;
+        SeminarViewHolder seminarViewHolder = new SeminarViewHolder(view, context, listSeminars);
+        return seminarViewHolder;
     }
 
     @Override

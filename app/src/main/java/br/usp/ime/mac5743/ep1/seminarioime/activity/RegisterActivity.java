@@ -15,6 +15,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
@@ -25,12 +28,17 @@ import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String CLASS_NAME = "RegisterActivity";
+
     private EditText etNusp;
     private EditText etName;
     private EditText etPassword;
     private Spinner spRole;
-    private Switch swAutoConnect;
     private SharedPreferences sharedPref;
+
+    private String nusp;
+    private String name;
+    private String password;
+    private String role;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,16 +52,6 @@ public class RegisterActivity extends AppCompatActivity {
         etName = (EditText) findViewById(R.id.name);
         etPassword = (EditText) findViewById(R.id.password);
         spRole = (Spinner) findViewById(R.id.roles);
-        swAutoConnect = (Switch) findViewById(R.id.auto_connect);
-        //RestAPIUtil.getAllStudents();
-        //RestAPIUtil.getStudent("1234");
-        /*
-        new Thread(){
-            public void run(){
-                RestAPIUtil.getAllStudents();
-            }
-        }.start();
-        */
     }
 
     @Override
@@ -68,10 +66,10 @@ public class RegisterActivity extends AppCompatActivity {
         String errorMessage = null;
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 
-        String nusp = etNusp.getText().toString();
-        String name = etName.getText().toString();
-        String password = etPassword.getText().toString();
-        String role = spRole.getSelectedItem().toString();
+        nusp = etNusp.getText().toString();
+        name = etName.getText().toString();
+        password = etPassword.getText().toString();
+        role = spRole.getSelectedItem().toString();
 
         ArrayList<String> invalidFields = new ArrayList();
 
@@ -109,13 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
                     });
             alertDialog.show();
         } else {
-            if (swAutoConnect.isChecked()) {
-                sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString(Preferences.NUSP.name(), nusp);
-                editor.putString(Preferences.PASSWORD.name(), password);
-                editor.commit();
-            }
+            saveUserDataToPreferences();
             alertDialog.setTitle(getString(R.string.registration_succeeded));
             alertDialog.setMessage(getString(R.string.account_created));
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
@@ -132,5 +124,16 @@ public class RegisterActivity extends AppCompatActivity {
         dialog.dismiss();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    private void saveUserDataToPreferences() {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(Preferences.NUSP.name(), nusp);
+        editor.putString(Preferences.NAME.name(), name.split(" ")[0]);
+        editor.putString(Preferences.FULL_NAME.name(), name);
+        editor.putString(Preferences.PASSWORD.name(), password);
+        editor.putString(Preferences.ROLE.name(), role);
+        editor.commit();
     }
 }
