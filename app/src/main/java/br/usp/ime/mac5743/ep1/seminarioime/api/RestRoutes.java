@@ -29,4 +29,6 @@ public interface RestRoutes {
     String DELETE_SEMINAR       = BASE_URL + "seminar/delete";
 
     String SUBMIT_ATTENDANCE    = BASE_URL + "attendence/submit";
+    String GET_ATTENDANCE_LIST  = BASE_URL + "attendence/listStudents";
+    String GET_STUDENT_SEMINARS = BASE_URL + "attendence/listSeminars";
 }

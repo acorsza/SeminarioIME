@@ -51,9 +51,22 @@
     <string name="ERROR_API_SEM004">An error occurred while getting a seminar. Error message: %s</string>
     <string name="ERROR_API_SEM005">An error occurred while getting all seminars. Error message: %s</string>
 
+    <string name="ERROR_API_ATT001">An error occurred while getting all students for a seminar. Error message: %s</string>
 
     <string name="edit_account_failed">Edit account failed.</string>
     <string name="edit_account_success">Account updated successfully.</string>
+    <string name="lbl_registration_invite">Don\'t have an account?</string>
+    <string name="registration_uspid_subtitle">Insert your USP id.</string>
+    <string name="registration_name_subtitle">Insert your full name</string>
+    <string name="registration_password_subtitle">Insert a strong password. At least 6 characters.</string>
+    <string name="registration_role_subtitle">Select your role.</string>
+    <string name="confirm_attendance_bluetooth">Confirm attendance over Bluetooth</string>
+    <string name="confirm_attendance_qrcode">Confirm attendance over QRCode</string>
+    <string name="student_counter">students are confirmed to this seminar.</string>
+
+    <string name="seminar_add_title">Add a seminar</string>
+    <string name="seminar_add_success">Seminar was added successfully.</string>
+    <string name="seminar_add_failed">Failed to add seminar.</string>
 
 
     <!-- Roles -->

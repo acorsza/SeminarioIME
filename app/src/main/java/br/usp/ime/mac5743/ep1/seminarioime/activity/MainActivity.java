@@ -1,10 +1,14 @@
 package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,9 +16,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +35,10 @@ import java.util.List;
 import br.usp.ime.mac5743.ep1.seminarioime.R;
 import br.usp.ime.mac5743.ep1.seminarioime.adapter.SeminarCardListAdapter;
 import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
+import br.usp.ime.mac5743.ep1.seminarioime.pojo.Professor;
 import br.usp.ime.mac5743.ep1.seminarioime.pojo.Seminar;
 import br.usp.ime.mac5743.ep1.seminarioime.util.Preferences;
+import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -72,7 +81,50 @@ public class MainActivity extends AppCompatActivity
         SeminarCardListAdapter seminarCardListAdapter = new SeminarCardListAdapter(seminarList, this);
         seminarListView.setAdapter(seminarCardListAdapter);
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Add a seminar
+                openDialog();
+            }
+        });
 
+        if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            fab.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void openDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.seminar_add_title));
+
+        final EditText input = new EditText(this);
+        input.setPadding(50,20,50,20);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (RestAPIUtil.addSeminar(input.getText().toString())) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.seminar_add_success), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.seminar_add_failed), Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     private void loadSeminars() {

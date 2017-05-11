@@ -10,7 +10,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay" >
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -21,10 +21,59 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <TextView
-        android:id="@+id/seminarios"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:background="@color/softGray"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/seminar_title"
+            style="@style/title"
+            tools:text="Teste" />
+
+        <TextView
+            android:id="@+id/seminar_counter"
+            style="@style/subtitle"
+            tools:text="14 alunos cadastrados" />
+
+        <View style="@style/horizontal_line" />
+
+        <TextView
+            android:id="@+id/status_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            tools:text="Buetooth ok" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Seminários" />
+        android:layout_margin="10dp"
+        android:background="@color/softGray"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/attendance_qrcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="confirmAttendanceViaQRCode"
+            android:text="@string/confirm_attendance_qrcode" />
+
+        <Button
+            android:id="@+id/attendance_bluetooth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="confirmAttendanceViaBluetooth"
+            android:text="@string/confirm_attendance_bluetooth" />
+
+    </LinearLayout>
+
 
 </LinearLayout>
