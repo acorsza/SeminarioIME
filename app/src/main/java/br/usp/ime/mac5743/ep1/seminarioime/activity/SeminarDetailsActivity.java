@@ -2,8 +2,10 @@ package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,7 +22,9 @@ import br.usp.ime.mac5743.ep1.seminarioime.R;
 import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
 import br.usp.ime.mac5743.ep1.seminarioime.bluetooth.BluetoothActivity;
 import br.usp.ime.mac5743.ep1.seminarioime.bluetooth.ConnectionThread;
+import br.usp.ime.mac5743.ep1.seminarioime.util.Preferences;
 
+import static br.usp.ime.mac5743.ep1.seminarioime.R.id.nusp;
 import static br.usp.ime.mac5743.ep1.seminarioime.R.id.toolbar;
 import static br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil.getAttendanceList;
 
@@ -39,11 +43,13 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     TextView tvSeminarCounter;
     static TextView statusMessage;
     ConnectionThread connect;
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seminar_details);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         Bundle b = getIntent().getExtras();
         this.seminarId = b.getString("seminarId");
@@ -96,6 +102,10 @@ public class SeminarDetailsActivity extends AppCompatActivity {
                 searchPairedDevices(view);
             }
         }
+    }
+
+    public void confirmAttendanceViaQRCode(View view) {
+        RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(),null),seminarId);
     }
 
     @Override

@@ -320,6 +320,27 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
      * Attendance APIs
      */
 
+    public static boolean confirmAttendance(String nusp, String pSeminarId) {
+        JSONObject responseFromAsyncTask;
+        URL url;
+        Seminar seminar = new Seminar(nusp);
+        seminar.setSeminarId(pSeminarId);
+        Student student = new Student();
+        student.setNusp(nusp);
+
+        try {
+            url = new URL(RestRoutes.SUBMIT_ATTENDANCE);
+            responseFromAsyncTask = getInstance().execute(url, POST, seminar, student).get();
+            Log.e(CLASS_NAME, responseFromAsyncTask.toString());
+            if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static ArrayList<JSONObject> getAttendanceList(String pSeminarId) {
         JSONObject responseFromAsyncTask;
         URL url;
@@ -420,13 +441,18 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                         sb.append("pass=");
                         sb.append(userRequestInfo.getPass());
                     }
-                } else if (seminarRequestInfo != null) {
+                }
+
+                if (seminarRequestInfo != null) {
                     if (seminarRequestInfo.getSeminarId() != null) {
-                        if(url.getPath().toString().contains("attendence")) {
-                            Log.e(CLASS_NAME,"SEMINAR");
+                        if (sb.toString() != null && sb.toString() != "") {
+                            sb.append("&");
+                        }
+                        if (url.getPath().toString().contains("attendence")) {
+                            Log.e(CLASS_NAME, "SEMINAR");
                             sb.append("seminar_id=");
                         } else {
-                            Log.e(CLASS_NAME,"SEMINAR2");
+                            Log.e(CLASS_NAME, "SEMINAR2");
                             sb.append("id=");
                         }
                         sb.append(seminarRequestInfo.getSeminarId());
@@ -440,6 +466,8 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                         sb.append(seminarRequestInfo.getSeminarName());
                     }
                 }
+
+                Log.e(CLASS_NAME, sb.toString());
 
                 String urlParameters = sb.toString();
                 byte[] outputBytes = urlParameters.getBytes("UTF-8");
