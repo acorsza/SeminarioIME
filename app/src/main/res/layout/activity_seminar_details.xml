@@ -49,15 +49,22 @@
             android:textSize="14sp"
             tools:text="Buetooth ok" />
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/seminar_attendance_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/student_actions_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:background="@color/softGray"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:visibility="gone" >
 
         <Button
             android:id="@+id/attendance_qrcode"
@@ -72,6 +79,34 @@
             android:layout_height="wrap_content"
             android:onClick="confirmAttendanceViaBluetooth"
             android:text="@string/confirm_attendance_bluetooth" />
+
+    </LinearLayout>
+
+    <!-- Layout for professor actions is gone by default -->
+
+    <LinearLayout
+        android:id="@+id/professor_actions_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/softGray"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/generate_qrcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="generateQRCode"
+            android:text="@string/generate_qrcode" />
+
+        <Button
+            android:id="@+id/listen_bluetooth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="listenBluetooth"
+            android:text="@string/listen_bluetooth_devices" />
 
     </LinearLayout>
 

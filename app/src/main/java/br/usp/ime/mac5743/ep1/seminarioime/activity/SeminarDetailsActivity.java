@@ -9,9 +9,11 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -19,37 +21,42 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
+import br.usp.ime.mac5743.ep1.seminarioime.adapter.SeminarCardListAdapter;
+import br.usp.ime.mac5743.ep1.seminarioime.adapter.StudentListAdapter;
 import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
 import br.usp.ime.mac5743.ep1.seminarioime.bluetooth.BluetoothActivity;
 import br.usp.ime.mac5743.ep1.seminarioime.bluetooth.ConnectionThread;
+import br.usp.ime.mac5743.ep1.seminarioime.pojo.Student;
 import br.usp.ime.mac5743.ep1.seminarioime.util.Preferences;
-
-import static br.usp.ime.mac5743.ep1.seminarioime.R.id.nusp;
-import static br.usp.ime.mac5743.ep1.seminarioime.R.id.toolbar;
-import static br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil.getAttendanceList;
+import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
 
 public class SeminarDetailsActivity extends AppCompatActivity {
 
-    private String seminarId;
+    private static String seminarId;
     private String seminarName;
-    private ArrayList<JSONObject> studentList;
+    private ArrayList<Student> studentList;
+    private RecyclerView studentListView;
 
 
     int ENABLE_BLUETOOTH = 1;
     int SELECT_PAIRED_DEVICE = 2;
-    int SELECT_DISCOVERED_DEVICE = 3;
 
     TextView tvSeminarName;
     TextView tvSeminarCounter;
     static TextView statusMessage;
-    ConnectionThread connect;
-    private SharedPreferences sharedPref;
+    private static ConnectionThread connect;
+    private static SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seminar_details);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(this.seminarId);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Bundle b = getIntent().getExtras();
         this.seminarId = b.getString("seminarId");
@@ -57,16 +64,19 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
         setSeminarDateToUI();
 
+        if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
+            LinearLayout ln = (LinearLayout) findViewById(R.id.professor_actions_layout);
+            ln.setVisibility(View.VISIBLE);
+        } else {
+            LinearLayout ln2 = (LinearLayout) findViewById(R.id.student_actions_layout);
+            ln2.setVisibility(View.VISIBLE);
+        }
+
 
     }
 
     private void setSeminarDateToUI() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(this.seminarId);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         setStudentsList();
 
         statusMessage = (TextView) findViewById(R.id.status_message);
@@ -79,6 +89,16 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         } else {
             tvSeminarCounter.setText("0 " + getString(R.string.student_counter));
         }
+
+        // Load seminars
+        studentListView = (RecyclerView) findViewById(R.id.seminar_attendance_list);
+
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+        studentListView.setLayoutManager(mLinearLayoutManager);
+
+        StudentListAdapter studentCardListAdapter = new StudentListAdapter(studentList, this);
+        studentListView.setAdapter(studentCardListAdapter);
+
     }
 
     @Override
@@ -105,7 +125,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     }
 
     public void confirmAttendanceViaQRCode(View view) {
-        RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(),null),seminarId);
+        RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(), null), seminarId);
     }
 
     @Override
@@ -121,7 +141,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 statusMessage.setText("Você selecionou " + data.getStringExtra("btDevName") + "\n"
                         + data.getStringExtra("btDevAddress"));
-                ConnectionThread connect = new ConnectionThread(data.getStringExtra("btDevAddress"));
+                connect = new ConnectionThread(data.getStringExtra("btDevAddress"));
                 connect.start();
             } else {
                 statusMessage.setText("Nenhum dispositivo selecionado :(");
@@ -136,34 +156,57 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         startActivityForResult(searchPairedDevicesIntent, SELECT_PAIRED_DEVICE);
     }
 
-    public void discoverDevices(View view) {
-
-        Intent searchPairedDevicesIntent = new Intent(this, BluetoothActivity.class);
-        startActivityForResult(searchPairedDevicesIntent, SELECT_DISCOVERED_DEVICE);
-    }
-
-    public void sendMessage(View view) {
-        String messageBoxString = "Mensagem";
-        byte[] data = messageBoxString.getBytes();
-        //connect.write(data);
-    }
-
     public static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-
             Bundle bundle = msg.getData();
             byte[] data = bundle.getByteArray("data");
-            String dataString = new String(data);
+            String string = new String(data);
 
-            if (dataString.equals("---N"))
-                statusMessage.setText("Ocorreu um erro durante a conexão D:");
-            else if (dataString.equals("---S"))
-                statusMessage.setText("Conectado :D");
+            if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
+                if (string != null) {
+                    if (RestAPIUtil.confirmAttendance(string, seminarId)) {
+                        statusMessage.setText("Aluno confirmado");
+                    }
+                } else {
+                    statusMessage.setText("Ocorreu um erro durante a conexão D:");
+                }
+            } else if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
+                if (string != null) {
+                    sendConfirmationAfterConnection();
+                }
+            }
         }
     };
 
+
     private void setStudentsList() {
-        this.studentList = RestAPIUtil.getAttendanceList(this.seminarId);
+
+        ArrayList<JSONObject> arrayJo = RestAPIUtil.getAttendanceList(this.seminarId);
+        this.studentList = new ArrayList<>();
+        for (JSONObject jo : arrayJo) {
+            Student student = new Student();
+            try {
+                student.setNusp(jo.getString("student_nusp"));
+                student.setName(RestAPIUtil.getStudent(student.getNusp()).getJSONObject("data").getString("name"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            studentList.add(student);
+        }
+
+    }
+
+    public void generateQRCode(View view) {
+        // Add QRCode generator code here
+    }
+
+    public void listenBluetooth(View view) {
+        connect = new ConnectionThread();
+        connect.start();
+    }
+
+    private static void sendConfirmationAfterConnection() {
+        connect.write(sharedPref.getString(Preferences.NUSP.name(), null).getBytes());
     }
 }

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,7 +34,6 @@ import java.util.List;
 import br.usp.ime.mac5743.ep1.seminarioime.R;
 import br.usp.ime.mac5743.ep1.seminarioime.adapter.SeminarCardListAdapter;
 import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
-import br.usp.ime.mac5743.ep1.seminarioime.pojo.Professor;
 import br.usp.ime.mac5743.ep1.seminarioime.pojo.Seminar;
 import br.usp.ime.mac5743.ep1.seminarioime.util.Preferences;
 import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
@@ -93,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
             fab.setVisibility(View.VISIBLE);
         } else {
-            fab.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.INVISIBLE);
         }
     }
 

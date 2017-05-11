@@ -1,6 +1,5 @@
 package br.usp.ime.mac5743.ep1.seminarioime.api;
 
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -14,7 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import br.usp.ime.mac5743.ep1.seminarioime.R;
 import br.usp.ime.mac5743.ep1.seminarioime.pojo.Professor;
 import br.usp.ime.mac5743.ep1.seminarioime.pojo.Seminar;
 import br.usp.ime.mac5743.ep1.seminarioime.pojo.Student;
@@ -366,7 +364,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
             return null;
         }
     }
-
 
     @Override
     protected JSONObject doInBackground(Object... objects) {

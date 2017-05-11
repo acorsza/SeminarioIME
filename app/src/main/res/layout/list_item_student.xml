@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="23dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:weightSum="1">
+
+        <TextView
+            android:includeFontPadding="false"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Usp ID"
+            android:id="@+id/student_list_item_nusp"
+            android:textSize="13dp"
+            android:textStyle="bold"
+            android:layout_weight="0.3" />
+        <TextView
+            android:includeFontPadding="false"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Usp ID"
+            android:id="@+id/student_list_item_name"
+            android:textSize="13dp"
+            android:textStyle="bold"
+            android:layout_weight="0.7" />
+
+    </LinearLayout>
+
+</LinearLayout>

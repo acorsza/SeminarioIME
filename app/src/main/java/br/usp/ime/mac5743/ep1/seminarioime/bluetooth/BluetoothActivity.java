@@ -2,25 +2,21 @@ package br.usp.ime.mac5743.ep1.seminarioime.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.ScanRecord;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
-import br.usp.ime.mac5743.ep1.seminarioime.pojo.Professor;
 
 /**
  * Created by aderleifilho on 30/04/17.
