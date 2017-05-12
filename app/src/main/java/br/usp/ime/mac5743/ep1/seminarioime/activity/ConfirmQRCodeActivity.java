@@ -2,6 +2,7 @@ package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
@@ -16,6 +17,13 @@ public class ConfirmQRCodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_qrcode);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if ( toolbar!= null ) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         Bundle b = getIntent().getExtras();
 
         String ok = b.getString( OK_FIELD );
@@ -30,5 +38,11 @@ public class ConfirmQRCodeActivity extends AppCompatActivity {
         } else {
             tv.setText( msg );
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

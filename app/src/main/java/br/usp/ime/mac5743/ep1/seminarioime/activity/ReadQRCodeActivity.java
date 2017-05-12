@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
@@ -24,10 +25,11 @@ import com.google.zxing.Result;
 
 import java.util.Arrays;
 
+import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
 import br.usp.ime.mac5743.ep1.seminarioime.util.Preferences;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class ReadQRCodeActivity extends Activity implements ZXingScannerView.ResultHandler {
+public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     public static final String SEMINAR_ID = "seminarId";
 
     private ZXingScannerView mScannerView;
@@ -43,15 +45,20 @@ public class ReadQRCodeActivity extends Activity implements ZXingScannerView.Res
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         nusp = sharedPref.getString(Preferences.NUSP.name(), null);
-
-
         mScannerView = new ZXingScannerView(this);   // Programmatically initialize the scanner view
         mScannerView.setKeepScreenOn( true );
         mScannerView.setAutoFocus( true );
         setContentView(R.layout.activity_read_qrcode );                // Set the scanner view as the content view
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if ( toolbar!= null ) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -62,6 +69,12 @@ public class ReadQRCodeActivity extends Activity implements ZXingScannerView.Res
             executePermissionGranted();
 
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override
@@ -93,19 +106,21 @@ public class ReadQRCodeActivity extends Activity implements ZXingScannerView.Res
     public void saveResult( String seminarId ) {
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
 
-        // TODO: chamar o serviço
-        String apiMessage = null;
-        intent.putExtra( ConfirmQRCodeActivity.OK_FIELD,apiMessage == null );
-        intent.putExtra( ConfirmQRCodeActivity.MESSAGE_FIELD,apiMessage);
+        boolean ok = RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(), null), seminarId);
+        intent.putExtra( ConfirmQRCodeActivity.OK_FIELD, ok );
         intent.putExtra( ConfirmQRCodeActivity.SEMINAR_ID, seminarId );
+        if ( !ok ) {
+            String errorMessage = getString(R.string.error_qrcode_message );
+            intent.putExtra( ConfirmQRCodeActivity.MESSAGE_FIELD, errorMessage );
+
+        }
         startActivity( intent );
     }
 
     @Override
     public void handleResult(Result rawResult) {
-        // Do something with the result here
-        Log.v(TAG, rawResult.getText()); // Prints scan results
-        Log.v(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
+        Log.d(TAG, rawResult.getText()); // Prints scan results
+        Log.d(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         // If you would like to resume scanning, call this method below:
 //        mScannerView.resumeCameraPreview(this);
         saveResult( rawResult.getText() );
@@ -120,8 +135,6 @@ public class ReadQRCodeActivity extends Activity implements ZXingScannerView.Res
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
         String permissionDeniedMessage = getString(R.string.qrcode_permission_denied );
 
-        // TODO: chamar o serviço
-        String apiMessage = null;
         intent.putExtra( ConfirmQRCodeActivity.OK_FIELD,Boolean.FALSE );
         intent.putExtra( ConfirmQRCodeActivity.MESSAGE_FIELD, permissionDeniedMessage );
         intent.putExtra( ConfirmQRCodeActivity.SEMINAR_ID, (String) null );

@@ -75,6 +75,7 @@
     <string name="qrcode_inititalization">Preparing to read QRCode</string>
     <string name="qrcode_permission_denied">Fail to read QRCode! The system needs cam permission to do it.</string>
     <string name="ok_qrcode_message">Successful! You have just confirmed your presence! (SeminarId: %s)</string>
+    <string name="error_qrcode_message">Fail to confirm the presence! (SeminarId: %s)</string>
     <string name="qrcode_show_code">QRCode ready! Bring the other device closer.</string>
 
     <!-- Roles -->

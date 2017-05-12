@@ -125,7 +125,8 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     }
 
     public void confirmAttendanceViaQRCode(View view) {
-        RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(), null), seminarId);
+        Intent intent = new Intent(this, ReadQRCodeActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -198,7 +199,9 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     }
 
     public void generateQRCode(View view) {
-        // Add QRCode generator code here
+        Intent intent = new Intent(this, ShowQRCodeActivity.class);
+        intent.putExtra( ShowQRCodeActivity.SEMINAR_ID, seminarId );
+        startActivity( intent );
     }
 
     public void listenBluetooth(View view) {
