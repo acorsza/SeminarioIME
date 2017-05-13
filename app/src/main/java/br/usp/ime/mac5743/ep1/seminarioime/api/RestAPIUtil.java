@@ -1,9 +1,9 @@
 package br.usp.ime.mac5743.ep1.seminarioime.api;
 
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -11,8 +11,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
-import br.usp.ime.mac5743.ep1.seminarioime.R;
 import br.usp.ime.mac5743.ep1.seminarioime.pojo.Professor;
 import br.usp.ime.mac5743.ep1.seminarioime.pojo.Seminar;
 import br.usp.ime.mac5743.ep1.seminarioime.pojo.Student;
@@ -64,7 +64,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 return true;
             }
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format("An error occurred when adding a Student. Error message: %s", e.getMessage()));
+            e.printStackTrace();
             return false;
         }
         return false;
@@ -80,7 +80,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
             url = new URL(RestRoutes.GET_ALL_STUDENTS);
             return getInstance().execute(url, GET).get();
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_S005), e.getMessage()));
+            e.printStackTrace();
             return null;
         }
     }
@@ -92,7 +92,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
             url = new URL(String.format(RestRoutes.GET_STUDENT, pNusp));
             return getInstance().execute(url, GET).get();
         } catch (Exception e) {
-            Log.d(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_S004), e.getMessage()));
+            e.printStackTrace();
             return null;
         }
     }
@@ -109,7 +109,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_S001), e.getMessage()));
+            e.printStackTrace();
             return e.getMessage();
         }
         return null;
@@ -127,7 +127,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_S002), e.getMessage()));
+            e.printStackTrace();
             return e.getMessage();
         }
         return null;
@@ -146,7 +146,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_S003), e.getMessage()));
+            e.printStackTrace();
             return e.getMessage();
         }
         return null;
@@ -162,7 +162,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
             url = new URL(RestRoutes.GET_ALL_PROFESSORS);
             return getInstance().execute(url, GET).get();
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_P005), e.getMessage()));
+            e.printStackTrace();
             return null;
         }
     }
@@ -173,7 +173,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
             url = new URL(String.format(RestRoutes.GET_PROFESSOR, pNusp));
             return getInstance().execute(url, GET).get();
         } catch (Exception e) {
-            Log.d(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_P004), e.getMessage()));
+            e.printStackTrace();
             return null;
         }
     }
@@ -190,7 +190,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_P001), e.getMessage()));
+            e.printStackTrace();
             return e.getMessage();
         }
         return null;
@@ -208,7 +208,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_P002), e.getMessage()));
+            e.printStackTrace();
             return e.getMessage();
         }
         return null;
@@ -227,7 +227,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_P003), e.getMessage()));
+            e.printStackTrace();
             return e.getMessage();
         }
         return null;
@@ -243,7 +243,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
             url = new URL(RestRoutes.GET_ALL_SEMINARS);
             return getInstance().execute(url, GET).get();
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_SEM005), e.getMessage()));
+            e.printStackTrace();
             return null;
         }
     }
@@ -255,12 +255,12 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
             url = new URL(String.format(RestRoutes.GET_SEMINAR, pSeminarId));
             return getInstance().execute(url, GET).get();
         } catch (Exception e) {
-            Log.d(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_SEM004), e.getMessage()));
+            e.printStackTrace();
             return null;
         }
     }
 
-    public static String addSeminar(String pSeminarName) {
+    public static boolean addSeminar(String pSeminarName) {
         JSONObject responseFromAsyncTask;
         URL url;
         Seminar seminar = new Seminar(pSeminarName);
@@ -268,14 +268,13 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         try {
             url = new URL(RestRoutes.ADD_SEMINAR);
             responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
-            if (responseFromAsyncTask != null && !responseFromAsyncTask.getBoolean("success")) {
-                return responseFromAsyncTask.getString("message");
+            if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
+                return true;
             }
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_SEM001), e.getMessage()));
-            return e.getMessage();
+            e.printStackTrace();
         }
-        return null;
+        return false;
     }
 
     public static String editSeminar(String pSeminarId, String pSeminarName) {
@@ -290,7 +289,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_SEM002), e.getMessage()));
+            e.printStackTrace();
             return e.getMessage();
         }
         return null;
@@ -309,7 +308,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            Log.e(CLASS_NAME, String.format(Resources.getSystem().getString(R.string.ERROR_API_SEM003), e.getMessage()));
+            e.printStackTrace();
             return e.getMessage();
         }
         return null;
@@ -319,12 +318,59 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
      * Attendance APIs
      */
 
+    public static boolean confirmAttendance(String nusp, String pSeminarId) {
+        JSONObject responseFromAsyncTask;
+        URL url;
+        Seminar seminar = new Seminar(nusp);
+        seminar.setSeminarId(pSeminarId);
+        Student student = new Student();
+        student.setNusp(nusp);
+
+        try {
+            url = new URL(RestRoutes.SUBMIT_ATTENDANCE);
+            responseFromAsyncTask = getInstance().execute(url, POST, seminar, student).get();
+            Log.e(CLASS_NAME, responseFromAsyncTask.toString());
+            if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static ArrayList<JSONObject> getAttendanceList(String pSeminarId) {
+        JSONObject responseFromAsyncTask;
+        URL url;
+        Seminar seminar = new Seminar();
+        seminar.setSeminarId(pSeminarId);
+        ArrayList<JSONObject> studentList = new ArrayList<>();
+
+        try {
+            url = new URL(RestRoutes.GET_ATTENDANCE_LIST);
+            responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
+            Log.e(CLASS_NAME, responseFromAsyncTask.toString());
+            if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
+                JSONArray ja = responseFromAsyncTask.getJSONArray("data");
+                if (ja != null) {
+                    for (int i = 0; i < ja.length(); i++) {
+                        studentList.add(ja.getJSONObject(i));
+                    }
+                }
+            }
+            return studentList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @Override
     protected JSONObject doInBackground(Object... objects) {
         Log.i(CLASS_NAME, "[BEGIN] doInBackground");
 
         User userRequestInfo = null;
-        Seminar seminarRequestIndo = null;
+        Seminar seminarRequestInfo = null;
         URL url = null;
         String requestMethod = null;
         JSONObject joResponse = null;
@@ -339,7 +385,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
             if (object instanceof User) {
                 userRequestInfo = (User) object;
             } else if (object instanceof Seminar) {
-                seminarRequestIndo = (Seminar) object;
+                seminarRequestInfo = (Seminar) object;
             }
 
             if (object instanceof URL) {
@@ -392,20 +438,33 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                         sb.append("pass=");
                         sb.append(userRequestInfo.getPass());
                     }
-                } else if (seminarRequestIndo != null) {
-                    if (seminarRequestIndo.getSeminarId() != null) {
-                        sb.append("id=");
-                        sb.append(seminarRequestIndo.getSeminarId());
+                }
+
+                if (seminarRequestInfo != null) {
+                    if (seminarRequestInfo.getSeminarId() != null) {
+                        if (sb.toString() != null && sb.toString() != "") {
+                            sb.append("&");
+                        }
+                        if (url.getPath().toString().contains("attendence")) {
+                            Log.e(CLASS_NAME, "SEMINAR");
+                            sb.append("seminar_id=");
+                        } else {
+                            Log.e(CLASS_NAME, "SEMINAR2");
+                            sb.append("id=");
+                        }
+                        sb.append(seminarRequestInfo.getSeminarId());
                     }
 
-                    if (seminarRequestIndo.getSeminarName() != null) {
+                    if (seminarRequestInfo.getSeminarName() != null) {
                         if (sb.toString() != null && sb.toString() != "") {
                             sb.append("&");
                         }
                         sb.append("name=");
-                        sb.append(seminarRequestIndo.getSeminarName());
+                        sb.append(seminarRequestInfo.getSeminarName());
                     }
                 }
+
+                Log.e(CLASS_NAME, sb.toString());
 
                 String urlParameters = sb.toString();
                 byte[] outputBytes = urlParameters.getBytes("UTF-8");

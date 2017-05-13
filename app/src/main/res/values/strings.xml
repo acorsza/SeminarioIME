@@ -28,6 +28,7 @@
     <string name="seminars">Seminars</string>
     <string name="account">Account Info</string>
     <string name="edit_account">Edit account</string>
+    <string name="read_qrcode">Ler QRCode</string>
     <string name="logoff">Logoff</string>
     <string name="login_successful">Welcome to IME Seminar.</string>
     <string name="login_failed">Login failed. Please check your credentials and connection.</string>
@@ -51,10 +52,31 @@
     <string name="ERROR_API_SEM004">An error occurred while getting a seminar. Error message: %s</string>
     <string name="ERROR_API_SEM005">An error occurred while getting all seminars. Error message: %s</string>
 
+    <string name="ERROR_API_ATT001">An error occurred while getting all students for a seminar. Error message: %s</string>
 
     <string name="edit_account_failed">Edit account failed.</string>
     <string name="edit_account_success">Account updated successfully.</string>
+    <string name="lbl_registration_invite">Don\'t have an account?</string>
+    <string name="registration_uspid_subtitle">Insert your USP id.</string>
+    <string name="registration_name_subtitle">Insert your full name</string>
+    <string name="registration_password_subtitle">Password must be at least 6 characters.</string>
+    <string name="registration_role_subtitle">Select your role.</string>
+    <string name="confirm_attendance_bluetooth">Confirm attendance over Bluetooth</string>
+    <string name="confirm_attendance_qrcode">Confirm attendance over QRCode</string>
+    <string name="student_counter">students are confirmed to this seminar.</string>
 
+    <string name="seminar_add_title">Add a seminar</string>
+    <string name="seminar_add_success">Seminar was added successfully.</string>
+    <string name="seminar_add_failed">Failed to add seminar.</string>
+    <string name="generate_qrcode">Generate Seminar QRCode</string>
+    <string name="listen_bluetooth_devices">Listen Bluetooth devices</string>
+
+    <string name="qrCode_label">QRCode</string>
+    <string name="qrcode_inititalization">Preparing to read QRCode</string>
+    <string name="qrcode_permission_denied">Fail to read QRCode! The system needs cam permission to do it.</string>
+    <string name="ok_qrcode_message">Successful! You have just confirmed your presence! (SeminarId: %s)</string>
+    <string name="error_qrcode_message">Fail to confirm the presence! (SeminarId: %s)</string>
+    <string name="qrcode_show_code">QRCode ready! Bring the other device closer.</string>
 
     <!-- Roles -->
     <string-array name="roles">

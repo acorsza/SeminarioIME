@@ -1,33 +1,215 @@
 package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import br.usp.ime.mac5743.ep1.seminarioime.R;
+import br.usp.ime.mac5743.ep1.seminarioime.adapter.SeminarCardListAdapter;
+import br.usp.ime.mac5743.ep1.seminarioime.adapter.StudentListAdapter;
+import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
+import br.usp.ime.mac5743.ep1.seminarioime.bluetooth.BluetoothActivity;
+import br.usp.ime.mac5743.ep1.seminarioime.bluetooth.ConnectionThread;
+import br.usp.ime.mac5743.ep1.seminarioime.pojo.Student;
+import br.usp.ime.mac5743.ep1.seminarioime.util.Preferences;
+import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
 
 public class SeminarDetailsActivity extends AppCompatActivity {
 
-    TextView tvSeminarId;
+    private static String seminarId;
+    private String seminarName;
+    private ArrayList<Student> studentList;
+    private RecyclerView studentListView;
+
+
+    int ENABLE_BLUETOOTH = 1;
+    int SELECT_PAIRED_DEVICE = 2;
+
     TextView tvSeminarName;
+    TextView tvSeminarCounter;
+    static TextView statusMessage;
+    private static ConnectionThread connect;
+    private static SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seminar_details);
-        Bundle b = getIntent().getExtras();
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(b.getString("seminarId"));
+        toolbar.setTitle(this.seminarId);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        Bundle b = getIntent().getExtras();
+        this.seminarId = b.getString("seminarId");
+        this.seminarName = b.getString("seminarName");
+
+        setSeminarDateToUI();
+
+        if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
+            LinearLayout ln = (LinearLayout) findViewById(R.id.professor_actions_layout);
+            ln.setVisibility(View.VISIBLE);
+        } else {
+            LinearLayout ln2 = (LinearLayout) findViewById(R.id.student_actions_layout);
+            ln2.setVisibility(View.VISIBLE);
+        }
+
+
+    }
+
+    private void setSeminarDateToUI() {
+
+        setStudentsList();
+
+        statusMessage = (TextView) findViewById(R.id.status_message);
+        tvSeminarName = (TextView) findViewById(R.id.seminar_title);
+        tvSeminarCounter = (TextView) findViewById(R.id.seminar_counter);
+
+        tvSeminarName.setText(this.seminarName);
+        if (this.studentList != null) {
+            tvSeminarCounter.setText(this.studentList.size() + " " + getString(R.string.student_counter));
+        } else {
+            tvSeminarCounter.setText("0 " + getString(R.string.student_counter));
+        }
+
+        // Load seminars
+        studentListView = (RecyclerView) findViewById(R.id.seminar_attendance_list);
+
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+        studentListView.setLayoutManager(mLinearLayoutManager);
+
+        StudentListAdapter studentCardListAdapter = new StudentListAdapter(studentList, this);
+        studentListView.setAdapter(studentCardListAdapter);
+
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    public void confirmAttendanceViaBluetooth(View view) {
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (btAdapter == null) {
+            Snackbar.make(view, "Que pena! Hardware BluetoothActivity não está funcionando :(", Snackbar.LENGTH_LONG).show();
+        } else {
+            Snackbar.make(view, "Ótimo! Hardware BluetoothActivity está funcionando :)", Snackbar.LENGTH_LONG).show();
+            if (!btAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, ENABLE_BLUETOOTH);
+                Snackbar.make(view, "Solicitando ativação do BluetoothActivity...", Snackbar.LENGTH_LONG).show();
+            } else {
+                Snackbar.make(view, "BluetoothActivity já ativado :)", Snackbar.LENGTH_LONG).show();
+                searchPairedDevices(view);
+            }
+        }
+    }
+
+    public void confirmAttendanceViaQRCode(View view) {
+        Intent intent = new Intent(this, ReadQRCodeActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == ENABLE_BLUETOOTH) {
+            if (resultCode == RESULT_OK) {
+                statusMessage.setText("BluetoothActivity ativado :)");
+            } else {
+                statusMessage.setText("BluetoothActivity não ativado :(");
+            }
+        } else if (requestCode == SELECT_PAIRED_DEVICE) {
+            if (resultCode == RESULT_OK) {
+                statusMessage.setText("Você selecionou " + data.getStringExtra("btDevName") + "\n"
+                        + data.getStringExtra("btDevAddress"));
+                connect = new ConnectionThread(data.getStringExtra("btDevAddress"));
+                connect.start();
+            } else {
+                statusMessage.setText("Nenhum dispositivo selecionado :(");
+            }
+        }
+
+    }
+
+    public void searchPairedDevices(View view) {
+
+        Intent searchPairedDevicesIntent = new Intent(this, BluetoothActivity.class);
+        startActivityForResult(searchPairedDevicesIntent, SELECT_PAIRED_DEVICE);
+    }
+
+    public static Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            byte[] data = bundle.getByteArray("data");
+            String string = new String(data);
+
+            if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
+                if (string != null) {
+                    if (RestAPIUtil.confirmAttendance(string, seminarId)) {
+                        statusMessage.setText("Aluno confirmado");
+                    }
+                } else {
+                    statusMessage.setText("Ocorreu um erro durante a conexão D:");
+                }
+            } else if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
+                if (string != null) {
+                    sendConfirmationAfterConnection();
+                }
+            }
+        }
+    };
+
+
+    private void setStudentsList() {
+
+        ArrayList<JSONObject> arrayJo = RestAPIUtil.getAttendanceList(this.seminarId);
+        this.studentList = new ArrayList<>();
+        for (JSONObject jo : arrayJo) {
+            Student student = new Student();
+            try {
+                student.setNusp(jo.getString("student_nusp"));
+                student.setName(RestAPIUtil.getStudent(student.getNusp()).getJSONObject("data").getString("name"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            studentList.add(student);
+        }
+
+    }
+
+    public void generateQRCode(View view) {
+        Intent intent = new Intent(this, ShowQRCodeActivity.class);
+        intent.putExtra( ShowQRCodeActivity.SEMINAR_ID, seminarId );
+        startActivity( intent );
+    }
+
+    public void listenBluetooth(View view) {
+        connect = new ConnectionThread();
+        connect.start();
+    }
+
+    private static void sendConfirmationAfterConnection() {
+        connect.write(sharedPref.getString(Preferences.NUSP.name(), null).getBytes());
     }
 }

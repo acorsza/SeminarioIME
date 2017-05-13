@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import br.usp.ime.mac5743.ep1.seminarioime.R;
 import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
 import br.usp.ime.mac5743.ep1.seminarioime.util.Preferences;
+import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -64,9 +65,8 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.login_successful), Toast.LENGTH_SHORT).show();
             if (swAutoConnect.isChecked()) {
                 setAutoConnectOn();
-            } else {
-                saveUserDataToPreferences();
             }
+            saveUserDataToPreferences();
             loadDashboard();
 
         } else {
@@ -87,7 +87,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void saveUserDataToPreferences() {
         try {
-            JSONObject jo = RestAPIUtil.getStudent(nusp).getJSONObject(DATA);
+            JSONObject jo;
+            if (role.equalsIgnoreCase(Roles.PROFESSOR.name())) {
+                jo = RestAPIUtil.getProfessor(nusp).getJSONObject(DATA);
+            } else {
+                jo = RestAPIUtil.getStudent(nusp).getJSONObject(DATA);
+            }
 
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(Preferences.NUSP.name(), nusp);
