@@ -61,8 +61,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void requestRegistrationOnServer(View view) {
-        Log.d(CLASS_NAME, "requestRegistrationOnServer");
-
         String errorMessage = null;
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 
@@ -94,29 +92,28 @@ public class RegisterActivity extends AppCompatActivity {
             } else if (role.equalsIgnoreCase(Roles.STUDENT.name())) {
                 errorMessage = RestAPIUtil.addStudent(nusp, name, password);
             }
-        }
-
-        if (errorMessage != null) {
-            alertDialog.setTitle(getString(R.string.registration_failed));
-            alertDialog.setMessage(errorMessage);
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
-        } else {
-            saveUserDataToPreferences();
-            alertDialog.setTitle(getString(R.string.registration_succeeded));
-            alertDialog.setMessage(getString(R.string.account_created));
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            loadDashboard(alertDialog);
-                        }
-                    });
-            alertDialog.show();
+            if (errorMessage != null) {
+                alertDialog.setTitle(getString(R.string.registration_failed));
+                alertDialog.setMessage(errorMessage);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            } else {
+                saveUserDataToPreferences();
+                alertDialog.setTitle(getString(R.string.registration_succeeded));
+                alertDialog.setMessage(getString(R.string.account_created));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                loadDashboard(alertDialog);
+                            }
+                        });
+                alertDialog.show();
+            }
         }
     }
 
