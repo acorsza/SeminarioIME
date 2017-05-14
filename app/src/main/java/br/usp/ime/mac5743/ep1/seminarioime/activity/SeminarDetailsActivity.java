@@ -1,5 +1,6 @@
 package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,6 +37,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     private static ArrayList<Student> studentList;
     private static RecyclerView studentListView;
     static StudentListAdapter studentCardListAdapter;
+    static ProgressDialog progress;
 
 
     int ENABLE_BLUETOOTH = 1;
@@ -66,6 +68,8 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         cancelBtn = (Button) findViewById(R.id.stop_listening);
         startListeningBtn = (Button) findViewById(R.id.listen_bluetooth);
         cancelBtn.setVisibility(View.GONE);
+
+        progress = new ProgressDialog(this);
 
         if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
             LinearLayout ln = (LinearLayout) findViewById(R.id.professor_actions_layout);
@@ -155,6 +159,10 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     public static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            progress.setTitle("Loading");
+            progress.setMessage("Wait while loading...");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+            progress.show();
             Bundle bundle = msg.getData();
             byte[] data = bundle.getByteArray("data");
             String string = new String(data);
@@ -172,14 +180,14 @@ public class SeminarDetailsActivity extends AppCompatActivity {
                             tvSeminarCounter.setText("0 Students");
                         }
                     }
-                } else {
-                    //statusMessage.setText("Ocorreu um erro durante a conexão D:");
                 }
             } else if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
                 if (string != null) {
                     sendConfirmationAfterConnection();
                 }
             }
+            // To dismiss the dialog
+            progress.dismiss();
         }
     };
 
@@ -228,5 +236,13 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         connect.cancel();
         connect = new ConnectionThread();
         connect.start();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (connect != null) {
+            connect.cancel();
+        }
+        super.onBackPressed();
     }
 }

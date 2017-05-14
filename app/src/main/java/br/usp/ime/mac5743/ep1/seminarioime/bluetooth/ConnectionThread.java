@@ -57,7 +57,7 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
-                toMainActivity("---N".getBytes());
+                //toMainActivity("---N".getBytes());
             }
 
         } else {
@@ -76,14 +76,11 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
-                toMainActivity("---N".getBytes());
             }
 
         }
 
         if(btSocket != null) {
-
-            toMainActivity("---S".getBytes());
 
             try {
 
@@ -102,7 +99,6 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
-                toMainActivity("---N".getBytes());
             }
         }
 
@@ -126,8 +122,6 @@ public class ConnectionThread extends Thread{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            toMainActivity("---N".getBytes());
         }
     }
 
