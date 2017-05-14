@@ -1,101 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical"
-    tools:context="br.usp.ime.mac5743.ep1.seminarioime.activity.RegisterActivity">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:layout_weight="1"
-        android:background="@color/softGray"
+        android:layout_height="match_parent"
+        android:background="@color/white"
         android:orientation="vertical"
-        android:padding="16dp">
+        tools:context="br.usp.ime.mac5743.ep1.seminarioime.activity.RegisterActivity">
 
-        <TextView
-            style="@style/title"
-            android:text="@string/lbl_registration" />
-
-        <View style="@style/horizontal_line" />
-
-        <TextView
-            style="@style/subtitle"
-            android:text="@string/registration_uspid_subtitle" />
-
-        <EditText
-            style="@style/editText"
-            android:id="@+id/nusp"
-            android:hint="@string/hint_nusp"
-            android:inputType="number" />
-
-        <TextView
-            style="@style/subtitle"
-            android:text="@string/registration_name_subtitle" />
-
-        <EditText
-            style="@style/editText"
-            android:id="@+id/name"
-            android:hint="@string/hint_name"
-            android:inputType="textPersonName" />
-
-        <TextView
-            style="@style/subtitle"
-            android:text="@string/registration_password_subtitle" />
-
-        <EditText
-            style="@style/editText"
-            android:id="@+id/password"
-            android:hint="@string/hint_password"
-            android:inputType="textPassword" />
-
-        <TextView
-            style="@style/subtitle"
-            android:text="@string/registration_role_subtitle" />
-
-        <Spinner
-            android:id="@+id/roles"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/roles"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp" />
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-    </LinearLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@color/softGray"
-        android:orientation="vertical"
-        android:padding="16dp">
+        </android.support.design.widget.AppBarLayout>
 
-        <Button
-            android:id="@+id/register"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@color/softGray"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                style="@style/title"
+                android:text="@string/lbl_registration" />
+
+            <View style="@style/horizontal_line" />
+
+            <TextView
+                style="@style/subtitle"
+                android:text="@string/registration_uspid_subtitle" />
+
+            <EditText
+                android:id="@+id/nusp"
+                style="@style/editText"
+                android:hint="@string/hint_nusp"
+                android:inputType="number" />
+
+            <TextView
+                style="@style/subtitle"
+                android:text="@string/registration_name_subtitle" />
+
+            <EditText
+                android:id="@+id/name"
+                style="@style/editText"
+                android:hint="@string/hint_name"
+                android:inputType="textPersonName" />
+
+            <TextView
+                style="@style/subtitle"
+                android:text="@string/registration_password_subtitle" />
+
+            <EditText
+                android:id="@+id/password"
+                style="@style/editText"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword" />
+
+            <TextView
+                style="@style/subtitle"
+                android:text="@string/registration_role_subtitle" />
+
+            <Spinner
+                android:id="@+id/roles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:entries="@array/roles" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="requestRegistrationOnServer"
-            android:text="@string/btn_register" />
+            android:layout_margin="10dp"
+            android:background="@color/softGray"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <Button
+                android:id="@+id/register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="requestRegistrationOnServer"
+                android:text="@string/btn_register" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

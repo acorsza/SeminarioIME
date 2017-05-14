@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void requestLoginOnServer(View view) {
+    public void requestLoginOnServer(View view) {
         if (view != null) {
             nusp = etNusp.getText().toString();
             password = etPassword.getText().toString();

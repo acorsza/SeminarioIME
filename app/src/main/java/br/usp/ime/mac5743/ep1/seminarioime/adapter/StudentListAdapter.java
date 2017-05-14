@@ -34,8 +34,8 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         }
     }
 
-    private List<Student> listStudents;
-    private Context context;
+    List<Student> listStudents;
+    Context context;
 
     public StudentListAdapter(List<Student> pStudents, Context pContext) {
         this.listStudents = pStudents;

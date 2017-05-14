@@ -36,16 +36,16 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     private static String seminarName;
     private static ArrayList<Student> studentList;
     private static RecyclerView studentListView;
-    private static StudentListAdapter studentCardListAdapter;
+    static StudentListAdapter studentCardListAdapter;
 
 
-    private int ENABLE_BLUETOOTH = 1;
-    private int SELECT_PAIRED_DEVICE = 2;
+    int ENABLE_BLUETOOTH = 1;
+    int SELECT_PAIRED_DEVICE = 2;
 
-    private static TextView tvSeminarName;
-    private static TextView tvSeminarCounter;
-    private Button cancelBtn;
-    private Button startListeningBtn;
+    static TextView tvSeminarName;
+    static TextView tvSeminarCounter;
+    Button cancelBtn;
+    Button startListeningBtn;
     private static ConnectionThread connect;
     private static SharedPreferences sharedPref;
 
@@ -153,7 +153,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void searchPairedDevices(View view) {
+    public void searchPairedDevices(View view) {
         Intent searchPairedDevicesIntent = new Intent(this, BluetoothActivity.class);
         startActivityForResult(searchPairedDevicesIntent, SELECT_PAIRED_DEVICE);
     }

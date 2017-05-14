@@ -1,93 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context="br.usp.ime.mac5743.ep1.seminarioime.activity.LoginActivity">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@color/softGray"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:verticalScrollbarPosition="defaultPosition"
+        tools:context="br.usp.ime.mac5743.ep1.seminarioime.activity.LoginActivity">
 
-        <TextView
-            style="@style/title"
-            android:text="@string/lbl_welcome" />
-
-        <View style="@style/horizontal_line" />
-
-        <EditText
-            android:id="@+id/nusp"
-            style="@style/editText"
-            android:hint="@string/hint_nusp"
-            android:inputType="number" />
-
-        <EditText
-            android:id="@+id/password"
-            style="@style/editText"
-            android:hint="@string/hint_password"
-            android:inputType="textPassword" />
-
-        <Spinner
-            android:id="@+id/roles"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:entries="@array/roles" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="2dip"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/darkGray" />
-
-        <Switch
-            android:id="@+id/auto_connect"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:paddingBottom="10dp"
-            android:text="@string/auto_connect"
-            android:textSize="16sp"/>
+            android:background="@color/softGray"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <Button
-            android:id="@+id/login"
+            <TextView
+                style="@style/title"
+                android:text="@string/lbl_welcome" />
+
+            <View style="@style/horizontal_line" />
+
+            <EditText
+                android:id="@+id/nusp"
+                style="@style/editText"
+                android:hint="@string/hint_nusp"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/password"
+                style="@style/editText"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword" />
+
+            <Spinner
+                android:id="@+id/roles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:entries="@array/roles" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/darkGray" />
+
+            <Switch
+                android:id="@+id/auto_connect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:paddingBottom="10dp"
+                android:text="@string/auto_connect"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="requestLoginOnServer"
+                android:text="@string/btn_login" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="requestLoginOnServer"
-            android:text="@string/btn_login" />
+            android:layout_margin="10dp"
+            android:background="@color/softGray"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                style="@style/title"
+                android:text="@string/lbl_registration_invite" />
+
+            <View style="@style/horizontal_line" />
+
+            <Button
+                android:id="@+id/register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="goToRegistrationActivity"
+                android:text="@string/btn_register" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@color/softGray"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            style="@style/title"
-            android:text="@string/lbl_registration_invite" />
-
-        <View style="@style/horizontal_line" />
-
-        <Button
-            android:id="@+id/register"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="goToRegistrationActivity"
-            android:text="@string/btn_register" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

@@ -97,12 +97,12 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
         mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
         mScannerView.startCamera();          // Start camera on resume
     }
-    private void turnOnQRCode() {
+    public void turnOnQRCode() {
         qrCodeLigado = true;
         startQRCode();
     }
 
-    private void saveResult(String seminarId) {
+    public void saveResult( String seminarId ) {
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
 
         boolean ok = RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(), null), seminarId);
@@ -130,7 +130,7 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
         turnOnQRCode();
     }
 
-    private void executePermissionDenied() {
+    public void executePermissionDenied() {
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
         String permissionDeniedMessage = getString(R.string.qrcode_permission_denied );
 

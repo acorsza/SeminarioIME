@@ -63,8 +63,8 @@ public class SeminarCardListAdapter extends RecyclerView.Adapter<SeminarCardList
         }
     }
 
-    private List<Seminar> listSeminars;
-    private Context context;
+    List<Seminar> listSeminars;
+    Context context;
 
     public SeminarCardListAdapter(List<Seminar> pSeminars, Context pContext) {
         this.listSeminars = pSeminars;
