@@ -1,16 +1,11 @@
 package br.usp.ime.mac5743.ep1.seminarioime.bluetooth;
 
-/**
- * Created by aderleifilho on 07/05/17.
- */
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;

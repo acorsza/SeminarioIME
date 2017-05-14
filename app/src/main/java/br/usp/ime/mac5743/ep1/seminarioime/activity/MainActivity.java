@@ -16,7 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -139,9 +138,6 @@ public class MainActivity extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-        Log.i("T", seminarList.toString());
     }
 
     @Override
@@ -165,16 +161,17 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_seminars) {
-            Toast.makeText(this, "Hi", Toast.LENGTH_LONG).show();
-        } else if (id == R.id.nav_edit_account) {
+        if (id == R.id.nav_edit_account) {
             Intent intent = new Intent(this, EditAccountActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_logoff) {
             logoff();
+        } else if (id == R.id.nav_bluetooth) {
+
+        } else if (id == R.id.nav_qrcode) {
 
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

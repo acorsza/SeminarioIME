@@ -442,8 +442,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                         if (sb.toString() != null && sb.toString() != "") {
                             sb.append("&");
                         }
-                        if (url.getPath().toString().contains("attendence")) {
-
+                        if (url.getPath().contains("attendence")) {
                             sb.append("seminar_id=");
                         } else {
                             sb.append("id=");
