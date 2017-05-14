@@ -161,12 +161,12 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     public static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-
             Bundle bundle = msg.getData();
             byte[] data = bundle.getByteArray("data");
             String string = new String(data);
 
             if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
+                restartBL();
                 if (string != null) {
                     if (RestAPIUtil.confirmAttendance(string, seminarId)) {
                         setStudentsList();
@@ -228,5 +228,11 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
     private static void sendConfirmationAfterConnection() {
         connect.write(sharedPref.getString(Preferences.NUSP.name(), null).getBytes());
+    }
+
+    public static void restartBL() {
+        connect.cancel();
+        connect = new ConnectionThread();
+        connect.start();
     }
 }

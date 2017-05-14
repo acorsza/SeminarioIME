@@ -18,10 +18,6 @@ import java.util.Set;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
 
-/**
- * Created by aderleifilho on 30/04/17.
- */
-
 public class BluetoothActivity extends AppCompatActivity {
 
     ArrayAdapter<String> pairedAdapter;
