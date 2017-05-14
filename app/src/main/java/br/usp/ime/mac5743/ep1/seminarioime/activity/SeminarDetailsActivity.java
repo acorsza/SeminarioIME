@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -111,16 +110,11 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
     public void confirmAttendanceViaBluetooth(View view) {
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (btAdapter == null) {
-            Snackbar.make(view, "Que pena! Hardware BluetoothActivity não está funcionando :(", Snackbar.LENGTH_LONG).show();
-        } else {
-            Snackbar.make(view, "Ótimo! Hardware BluetoothActivity está funcionando :)", Snackbar.LENGTH_LONG).show();
+        if (btAdapter != null) {
             if (!btAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, ENABLE_BLUETOOTH);
-                Snackbar.make(view, "Solicitando ativação do BluetoothActivity...", Snackbar.LENGTH_LONG).show();
             } else {
-                Snackbar.make(view, "BluetoothActivity já ativado :)", Snackbar.LENGTH_LONG).show();
                 searchPairedDevices(view);
             }
         }
