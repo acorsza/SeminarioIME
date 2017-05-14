@@ -4,7 +4,7 @@ package br.usp.ime.mac5743.ep1.seminarioime.api;
  * Created by aderleifilho on 28/04/17.
  */
 
-public interface RestRoutes {
+interface RestRoutes {
     String BASE_URL             = "http://207.38.82.139:8001/";
 
     String LOGIN_STUDENT        = BASE_URL + "login/student";

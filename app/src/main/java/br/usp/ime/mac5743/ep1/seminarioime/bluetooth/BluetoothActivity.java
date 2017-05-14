@@ -24,10 +24,10 @@ import br.usp.ime.mac5743.ep1.seminarioime.R;
 
 public class BluetoothActivity extends AppCompatActivity {
 
-    ArrayAdapter<String> pairedAdapter;
-    ArrayAdapter<String> nearAdapter;
-    ListView lvPaired;
-    ListView lvNear;
+    private ArrayAdapter<String> pairedAdapter;
+    private ArrayAdapter<String> nearAdapter;
+    private ListView lvPaired;
+    private ListView lvNear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

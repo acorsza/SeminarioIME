@@ -53,7 +53,7 @@ public class ShowQRCodeActivity extends AppCompatActivity {
         }
     }
 
-    Bitmap encodeAsBitmap(String str, int size) throws WriterException {
+    private Bitmap encodeAsBitmap(String str, int size) throws WriterException {
         BitMatrix result;
         try {
             result = new MultiFormatWriter().encode(str,
