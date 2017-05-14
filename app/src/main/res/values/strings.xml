@@ -70,6 +70,9 @@
     <string name="seminar_add_failed">Failed to add seminar.</string>
     <string name="generate_qrcode">Generate Seminar QRCode</string>
     <string name="listen_bluetooth_devices">Listen Bluetooth devices</string>
+    <string name="attendance">Attendance</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="qrcode">QRCode</string>
 
     <string name="qrCode_label">QRCode</string>
     <string name="qrcode_inititalization">Preparing to read QRCode</string>

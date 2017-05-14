@@ -329,7 +329,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         try {
             url = new URL(RestRoutes.SUBMIT_ATTENDANCE);
             responseFromAsyncTask = getInstance().execute(url, POST, seminar, student).get();
-            Log.e(CLASS_NAME, responseFromAsyncTask.toString());
             if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
                 return true;
             }
@@ -349,7 +348,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         try {
             url = new URL(RestRoutes.GET_ATTENDANCE_LIST);
             responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
-            Log.e(CLASS_NAME, responseFromAsyncTask.toString());
             if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
                 JSONArray ja = responseFromAsyncTask.getJSONArray("data");
                 if (ja != null) {
@@ -360,7 +358,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
             }
             return studentList;
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -446,10 +443,9 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                             sb.append("&");
                         }
                         if (url.getPath().toString().contains("attendence")) {
-                            Log.e(CLASS_NAME, "SEMINAR");
+
                             sb.append("seminar_id=");
                         } else {
-                            Log.e(CLASS_NAME, "SEMINAR2");
                             sb.append("id=");
                         }
                         sb.append(seminarRequestInfo.getSeminarId());
@@ -463,8 +459,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                         sb.append(seminarRequestInfo.getSeminarName());
                     }
                 }
-
-                Log.e(CLASS_NAME, sb.toString());
 
                 String urlParameters = sb.toString();
                 byte[] outputBytes = urlParameters.getBytes("UTF-8");

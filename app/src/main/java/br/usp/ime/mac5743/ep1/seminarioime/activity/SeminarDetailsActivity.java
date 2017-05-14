@@ -3,12 +3,12 @@ package br.usp.ime.mac5743.ep1.seminarioime.activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +21,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
-import br.usp.ime.mac5743.ep1.seminarioime.adapter.SeminarCardListAdapter;
 import br.usp.ime.mac5743.ep1.seminarioime.adapter.StudentListAdapter;
 import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
 import br.usp.ime.mac5743.ep1.seminarioime.bluetooth.BluetoothActivity;
@@ -33,16 +32,17 @@ import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
 public class SeminarDetailsActivity extends AppCompatActivity {
 
     private static String seminarId;
-    private String seminarName;
-    private ArrayList<Student> studentList;
-    private RecyclerView studentListView;
+    private static String seminarName;
+    private static ArrayList<Student> studentList;
+    private static RecyclerView studentListView;
+    static StudentListAdapter studentCardListAdapter;
 
 
     int ENABLE_BLUETOOTH = 1;
     int SELECT_PAIRED_DEVICE = 2;
 
-    TextView tvSeminarName;
-    TextView tvSeminarCounter;
+    static TextView tvSeminarName;
+    static TextView tvSeminarCounter;
     static TextView statusMessage;
     private static ConnectionThread connect;
     private static SharedPreferences sharedPref;
@@ -57,11 +57,9 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         Bundle b = getIntent().getExtras();
-        this.seminarId = b.getString("seminarId");
-        this.seminarName = b.getString("seminarName");
-
+        seminarId = b.getString("seminarId");
+        seminarName = b.getString("seminarName");
         setSeminarDateToUI();
 
         if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
@@ -83,8 +81,8 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         tvSeminarName = (TextView) findViewById(R.id.seminar_title);
         tvSeminarCounter = (TextView) findViewById(R.id.seminar_counter);
 
-        tvSeminarName.setText(this.seminarName);
-        if (this.studentList != null) {
+        tvSeminarName.setText(seminarName);
+        if (studentList != null) {
             tvSeminarCounter.setText(this.studentList.size() + " " + getString(R.string.student_counter));
         } else {
             tvSeminarCounter.setText("0 " + getString(R.string.student_counter));
@@ -96,8 +94,9 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         studentListView.setLayoutManager(mLinearLayoutManager);
 
-        StudentListAdapter studentCardListAdapter = new StudentListAdapter(studentList, this);
+        studentCardListAdapter = new StudentListAdapter(studentList, this);
         studentListView.setAdapter(studentCardListAdapter);
+        studentListView.refreshDrawableState();
 
     }
 
@@ -167,7 +166,14 @@ public class SeminarDetailsActivity extends AppCompatActivity {
             if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
                 if (string != null) {
                     if (RestAPIUtil.confirmAttendance(string, seminarId)) {
-                        statusMessage.setText("Aluno confirmado");
+                        setStudentsList();
+                        studentCardListAdapter.setStudents(studentList);
+                        studentListView.setAdapter(studentCardListAdapter);
+                        if (studentList != null) {
+                            tvSeminarCounter.setText(studentList.size() + " are registered");
+                        } else {
+                            tvSeminarCounter.setText("0 Students");
+                        }
                     }
                 } else {
                     statusMessage.setText("Ocorreu um erro durante a conexão D:");
@@ -181,21 +187,21 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     };
 
 
-    private void setStudentsList() {
-
-        ArrayList<JSONObject> arrayJo = RestAPIUtil.getAttendanceList(this.seminarId);
-        this.studentList = new ArrayList<>();
-        for (JSONObject jo : arrayJo) {
-            Student student = new Student();
-            try {
-                student.setNusp(jo.getString("student_nusp"));
-                student.setName(RestAPIUtil.getStudent(student.getNusp()).getJSONObject("data").getString("name"));
-            } catch (Exception e) {
-                e.printStackTrace();
+    private static void setStudentsList() {
+        ArrayList<JSONObject> arrayJo = RestAPIUtil.getAttendanceList(seminarId);
+        studentList = new ArrayList<>();
+        if (arrayJo != null) {
+            for (JSONObject jo : arrayJo) {
+                Student student = new Student();
+                try {
+                    student.setNusp(jo.getString("student_nusp"));
+                    student.setName(RestAPIUtil.getStudent(student.getNusp()).getJSONObject("data").getString("name"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                studentList.add(student);
             }
-            studentList.add(student);
         }
-
     }
 
     public void generateQRCode(View view) {
