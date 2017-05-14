@@ -14,7 +14,7 @@ public enum Preferences {
 
     private final String name;
 
-    private Preferences(String s) {
+    Preferences(String s) {
         name = s;
     }
 

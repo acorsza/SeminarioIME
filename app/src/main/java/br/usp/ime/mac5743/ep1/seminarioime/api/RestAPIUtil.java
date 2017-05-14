@@ -421,7 +421,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                     }
 
                     if (userRequestInfo.getName() != null) {
-                        if (sb.toString() != null && sb.toString() != "") {
+                        if (sb.toString() != null && !sb.toString().equalsIgnoreCase("")) {
                             sb.append("&");
                         }
                         sb.append("name=");
@@ -429,7 +429,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                     }
 
                     if (userRequestInfo.getPass() != null) {
-                        if (sb.toString() != null && sb.toString() != "") {
+                        if (sb.toString() != null && !sb.toString().equalsIgnoreCase("")) {
                             sb.append("&");
                         }
                         sb.append("pass=");
@@ -439,7 +439,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
                 if (seminarRequestInfo != null) {
                     if (seminarRequestInfo.getSeminarId() != null) {
-                        if (sb.toString() != null && sb.toString() != "") {
+                        if (sb.toString() != null && !sb.toString().equalsIgnoreCase("")) {
                             sb.append("&");
                         }
                         if (url.getPath().contains("attendence")) {
@@ -451,7 +451,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                     }
 
                     if (seminarRequestInfo.getSeminarName() != null) {
-                        if (sb.toString() != null && sb.toString() != "") {
+                        if (sb.toString() != null && !sb.toString().equalsIgnoreCase("")) {
                             sb.append("&");
                         }
                         sb.append("name=");

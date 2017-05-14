@@ -33,7 +33,6 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText etName;
     private EditText etPassword;
     private Spinner spRole;
-    private SharedPreferences sharedPref;
 
     private String nusp;
     private String name;
@@ -124,7 +123,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void saveUserDataToPreferences() {
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(Preferences.NUSP.name(), nusp);
         editor.putString(Preferences.NAME.name(), name.split(" ")[0]);

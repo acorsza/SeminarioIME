@@ -41,12 +41,11 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
     private SharedPreferences sharedPref;
 
 
-    private String nusp;
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        nusp = sharedPref.getString(Preferences.NUSP.name(), null);
+        String nusp = sharedPref.getString(Preferences.NUSP.name(), null);
         mScannerView = new ZXingScannerView(this);   // Programmatically initialize the scanner view
         mScannerView.setKeepScreenOn( true );
         mScannerView.setAutoFocus( true );
@@ -98,12 +97,12 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
         mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
         mScannerView.startCamera();          // Start camera on resume
     }
-    public void turnOnQRCode() {
+    private void turnOnQRCode() {
         qrCodeLigado = true;
         startQRCode();
     }
 
-    public void saveResult( String seminarId ) {
+    private void saveResult(String seminarId) {
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
 
         boolean ok = RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(), null), seminarId);
@@ -131,7 +130,7 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
         turnOnQRCode();
     }
 
-    public void executePermissionDenied() {
+    private void executePermissionDenied() {
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
         String permissionDeniedMessage = getString(R.string.qrcode_permission_denied );
 

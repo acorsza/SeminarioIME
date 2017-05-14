@@ -41,13 +41,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreferences sharedPref;
-    private TextView tvNusp;
-    private TextView tvName;
-    private String nusp;
-    private String name;
 
     private List<Seminar> seminarList;
-    private RecyclerView seminarListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Load seminars
-        seminarListView = (RecyclerView) findViewById(R.id.seminar_list);
+        RecyclerView seminarListView = (RecyclerView) findViewById(R.id.seminar_list);
 
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         seminarListView.setLayoutManager(mLinearLayoutManager);
@@ -147,10 +142,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Load user data and set to fields
-        tvName = (TextView) findViewById(R.id.menu_name);
-        tvNusp = (TextView) findViewById(R.id.menu_nusp);
-        nusp = sharedPref.getString(Preferences.NUSP.name(), null);
-        name = sharedPref.getString(Preferences.NAME.name(), null);
+        TextView tvName = (TextView) findViewById(R.id.menu_name);
+        TextView tvNusp = (TextView) findViewById(R.id.menu_nusp);
+        String nusp = sharedPref.getString(Preferences.NUSP.name(), null);
+        String name = sharedPref.getString(Preferences.NAME.name(), null);
         tvName.setText(name);
         tvNusp.setText(nusp);
         return true;
@@ -182,7 +177,7 @@ public class MainActivity extends AppCompatActivity
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }

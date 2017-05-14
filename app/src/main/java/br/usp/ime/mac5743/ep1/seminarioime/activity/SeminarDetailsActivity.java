@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,15 +36,16 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     private static String seminarName;
     private static ArrayList<Student> studentList;
     private static RecyclerView studentListView;
-    static StudentListAdapter studentCardListAdapter;
+    private static StudentListAdapter studentCardListAdapter;
 
 
-    int ENABLE_BLUETOOTH = 1;
-    int SELECT_PAIRED_DEVICE = 2;
+    private int ENABLE_BLUETOOTH = 1;
+    private int SELECT_PAIRED_DEVICE = 2;
 
-    static TextView tvSeminarName;
-    static TextView tvSeminarCounter;
-    static TextView statusMessage;
+    private static TextView tvSeminarName;
+    private static TextView tvSeminarCounter;
+    private Button cancelBtn;
+    private Button startListeningBtn;
     private static ConnectionThread connect;
     private static SharedPreferences sharedPref;
 
@@ -62,6 +64,10 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         seminarName = b.getString("seminarName");
         setSeminarDateToUI();
 
+        cancelBtn = (Button) findViewById(R.id.stop_listening);
+        startListeningBtn = (Button) findViewById(R.id.listen_bluetooth);
+        cancelBtn.setVisibility(View.GONE);
+
         if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
             LinearLayout ln = (LinearLayout) findViewById(R.id.professor_actions_layout);
             ln.setVisibility(View.VISIBLE);
@@ -69,15 +75,12 @@ public class SeminarDetailsActivity extends AppCompatActivity {
             LinearLayout ln2 = (LinearLayout) findViewById(R.id.student_actions_layout);
             ln2.setVisibility(View.VISIBLE);
         }
-
-
     }
 
     private void setSeminarDateToUI() {
 
         setStudentsList();
 
-        statusMessage = (TextView) findViewById(R.id.status_message);
         tvSeminarName = (TextView) findViewById(R.id.seminar_title);
         tvSeminarCounter = (TextView) findViewById(R.id.seminar_counter);
 
@@ -133,25 +136,24 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
         if (requestCode == ENABLE_BLUETOOTH) {
             if (resultCode == RESULT_OK) {
-                statusMessage.setText("BluetoothActivity ativado :)");
+                //statusMessage.setText("BluetoothActivity ativado :)");
             } else {
-                statusMessage.setText("BluetoothActivity não ativado :(");
+                //statusMessage.setText("BluetoothActivity não ativado :(");
             }
         } else if (requestCode == SELECT_PAIRED_DEVICE) {
             if (resultCode == RESULT_OK) {
-                statusMessage.setText("Você selecionou " + data.getStringExtra("btDevName") + "\n"
-                        + data.getStringExtra("btDevAddress"));
+                //statusMessage.setText("Você selecionou " + data.getStringExtra("btDevName") + "\n"
+                //         + data.getStringExtra("btDevAddress"));
                 connect = new ConnectionThread(data.getStringExtra("btDevAddress"));
                 connect.start();
             } else {
-                statusMessage.setText("Nenhum dispositivo selecionado :(");
+                //statusMessage.setText("Nenhum dispositivo selecionado :(");
             }
         }
 
     }
 
-    public void searchPairedDevices(View view) {
-
+    private void searchPairedDevices(View view) {
         Intent searchPairedDevicesIntent = new Intent(this, BluetoothActivity.class);
         startActivityForResult(searchPairedDevicesIntent, SELECT_PAIRED_DEVICE);
     }
@@ -159,6 +161,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     public static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+
             Bundle bundle = msg.getData();
             byte[] data = bundle.getByteArray("data");
             String string = new String(data);
@@ -176,7 +179,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    statusMessage.setText("Ocorreu um erro durante a conexão D:");
+                    //statusMessage.setText("Ocorreu um erro durante a conexão D:");
                 }
             } else if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
                 if (string != null) {
@@ -206,13 +209,21 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
     public void generateQRCode(View view) {
         Intent intent = new Intent(this, ShowQRCodeActivity.class);
-        intent.putExtra( ShowQRCodeActivity.SEMINAR_ID, seminarId );
-        startActivity( intent );
+        intent.putExtra(ShowQRCodeActivity.SEMINAR_ID, seminarId);
+        startActivity(intent);
     }
 
     public void listenBluetooth(View view) {
         connect = new ConnectionThread();
         connect.start();
+        cancelBtn.setVisibility(View.VISIBLE);
+        startListeningBtn.setVisibility(View.GONE);
+    }
+
+    public void stopListeningBluetooth(View view) {
+        connect.cancel();
+        cancelBtn.setVisibility(View.GONE);
+        startListeningBtn.setVisibility(View.VISIBLE);
     }
 
     private static void sendConfirmationAfterConnection() {

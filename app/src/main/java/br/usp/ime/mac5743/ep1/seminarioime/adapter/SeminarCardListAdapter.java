@@ -1,5 +1,6 @@
 package br.usp.ime.mac5743.ep1.seminarioime.adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,8 +30,9 @@ public class SeminarCardListAdapter extends RecyclerView.Adapter<SeminarCardList
         TextView seminarId;
         Context context;
         List<Seminar> seminars;
+        ProgressDialog progress;
 
-        SeminarViewHolder(View itemView, Context pContext, final List<Seminar> pSeminars) {
+        SeminarViewHolder(View itemView, final Context pContext, final List<Seminar> pSeminars) {
             super(itemView);
             context = pContext;
             seminars = pSeminars;
@@ -41,6 +43,12 @@ public class SeminarCardListAdapter extends RecyclerView.Adapter<SeminarCardList
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    progress = new ProgressDialog(pContext);
+                    progress.setTitle("Loading");
+                    progress.setMessage("Wait while loading...");
+                    progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+                    progress.show();
+
                     int i = Integer.valueOf(v.getTag().toString());
 
                     Intent intent = new Intent(context, SeminarDetailsActivity.class);
@@ -49,13 +57,14 @@ public class SeminarCardListAdapter extends RecyclerView.Adapter<SeminarCardList
                     b.putString("seminarName", seminars.get(i).getSeminarName());
                     intent.putExtras(b);
                     context.startActivity(intent);
+                    progress.dismiss();
                 }
             });
         }
     }
 
-    List<Seminar> listSeminars;
-    Context context;
+    private List<Seminar> listSeminars;
+    private Context context;
 
     public SeminarCardListAdapter(List<Seminar> pSeminars, Context pContext) {
         this.listSeminars = pSeminars;

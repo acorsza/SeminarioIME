@@ -80,6 +80,7 @@
     <string name="ok_qrcode_message">Successful! You have just confirmed your presence! (SeminarId: %s)</string>
     <string name="error_qrcode_message">Fail to confirm the presence! (SeminarId: %s)</string>
     <string name="qrcode_show_code">QRCode ready! Bring the other device closer.</string>
+    <string name="stop_listening_bluetooth">Stop listening Bluetooth</string>
 
     <!-- Roles -->
     <string-array name="roles">

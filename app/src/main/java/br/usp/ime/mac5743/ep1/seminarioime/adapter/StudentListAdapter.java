@@ -20,9 +20,6 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
 
     private final String CLASS_NAME = "StudentListAdapter";
 
-    private List<Student> mStudents;
-    private Context mContext;
-
     public class StudentViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvNusp;
@@ -30,15 +27,15 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
 
         StudentViewHolder(View itemView, Context pContext, final List<Student> pStudents) {
             super(itemView);
-            mContext = pContext;
-            mStudents = pStudents;
+            Context mContext = pContext;
+            List<Student> mStudents = pStudents;
             tvNusp = (TextView) itemView.findViewById(R.id.student_list_item_nusp);
             tvName = (TextView) itemView.findViewById(R.id.student_list_item_name);
         }
     }
 
-    List<Student> listStudents;
-    Context context;
+    private List<Student> listStudents;
+    private Context context;
 
     public StudentListAdapter(List<Student> pStudents, Context pContext) {
         this.listStudents = pStudents;
