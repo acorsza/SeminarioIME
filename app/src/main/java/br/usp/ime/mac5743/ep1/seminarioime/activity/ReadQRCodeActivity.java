@@ -130,8 +130,6 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
 
     @Override
     public void handleResult(Result rawResult) {
-        Log.d(TAG, rawResult.getText()); // Prints scan results
-        Log.d(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         // If you would like to resume scanning, call this method below:
 //        mScannerView.resumeCameraPreview(this);
         saveResult( rawResult.getText() );
@@ -161,13 +159,9 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Log.d( "Testes", "Concedeu!!!!"  );
                     executePermissionGranted();
 
                 } else {
-
-                    Log.d( "Testes", "Concedeu nada!!!!"  );
                     executePermissionDenied();
                 }
             }

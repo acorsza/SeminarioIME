@@ -23,30 +23,30 @@
 
     <TextView
         android:id="@+id/paired_devices"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Devices pareados"
-        android:layout_gravity="center_horizontal" />
+        android:text="@string/paired_devices"
+        android:layout_gravity="center_horizontal"
+        style="@style/title" />
 
     <ListView
         android:id="@+id/bluetooth_paired_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></ListView>
+        android:layout_weight="1" />
+
+    <View style="@style/horizontal_line" />
 
     <TextView
         android:id="@+id/near_devices"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Near devices"
-        android:layout_gravity="center_horizontal" />
+        android:text="@string/near_devices"
+        android:layout_gravity="center_horizontal"
+        style="@style/title"/>
 
     <ListView
         android:id="@+id/bluetooth_near_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></ListView>
+        android:layout_weight="1" />
 
 </LinearLayout>

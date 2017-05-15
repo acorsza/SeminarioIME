@@ -1,7 +1,6 @@
 package br.usp.ime.mac5743.ep1.seminarioime.api;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,7 +37,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         return new RestAPIUtil();
     }
 
-    private static final String CLASS_NAME = "RestAPIUtil";
     private static final String GET = "GET";
     private static final String POST = "POST";
 
@@ -59,7 +57,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 url = new URL(RestRoutes.LOGIN_STUDENT);
             }
             responseFromAsyncTask = getInstance().execute(url, POST, student).get();
-            Log.d(CLASS_NAME, responseFromAsyncTask.toString());
             if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
                 return true;
             }
@@ -86,7 +83,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
     }
 
     public static JSONObject getStudent(String pNusp) {
-        Log.d(CLASS_NAME, String.format(RestRoutes.GET_STUDENT, pNusp));
         URL url;
         try {
             url = new URL(String.format(RestRoutes.GET_STUDENT, pNusp));
@@ -249,7 +245,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
     }
 
     public static JSONObject getSeminar(String pSeminarId) {
-        Log.d(CLASS_NAME, String.format(RestRoutes.GET_SEMINAR, pSeminarId));
         URL url;
         try {
             url = new URL(String.format(RestRoutes.GET_SEMINAR, pSeminarId));
@@ -364,13 +359,11 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
     @Override
     protected JSONObject doInBackground(Object... objects) {
-        Log.i(CLASS_NAME, "[BEGIN] doInBackground");
-
         User userRequestInfo = null;
         Seminar seminarRequestInfo = null;
         URL url = null;
         String requestMethod = null;
-        JSONObject joResponse = null;
+        JSONObject joResponse;
 
         for (Object object : objects) {
             if (object instanceof String) {
@@ -397,7 +390,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
              */
 
             HttpURLConnection connection;
-            Log.i(CLASS_NAME, url.toString());
             connection = (HttpURLConnection) url.openConnection();
             connection.setReadTimeout(30000);
             connection.setConnectTimeout(30000);
@@ -480,8 +472,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Log.i(CLASS_NAME, "[END] doInBackground");
         return null;
     }
 }

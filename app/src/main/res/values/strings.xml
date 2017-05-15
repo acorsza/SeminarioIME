@@ -83,6 +83,8 @@
     <string name="stop_listening_bluetooth">Stop listening Bluetooth</string>
 
     <string name="qr_code_title">QR Code</string>
+    <string name="near_devices">Near devices</string>
+    <string name="paired_devices">Paired devices</string>
 
     <!-- Roles -->
     <string-array name="roles">

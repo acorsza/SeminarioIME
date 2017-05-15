@@ -102,8 +102,6 @@ public class EditAccountActivity extends AppCompatActivity implements Navigation
     }
 
     public void requestUpdateUserOnServer(View view) {
-        Log.d(CLASS_NAME, "requestRegistrationOnServer");
-
         String errorMessage = null;
 
         String nusp = etNusp.getText().toString();
