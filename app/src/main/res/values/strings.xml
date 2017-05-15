@@ -82,6 +82,8 @@
     <string name="qrcode_show_code">QRCode ready! Bring the other device closer.</string>
     <string name="stop_listening_bluetooth">Stop listening Bluetooth</string>
 
+    <string name="qr_code_title">QR Code</string>
+
     <!-- Roles -->
     <string-array name="roles">
         <item>Student</item>

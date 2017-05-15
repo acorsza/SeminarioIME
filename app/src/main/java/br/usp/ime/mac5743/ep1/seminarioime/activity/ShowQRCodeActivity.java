@@ -26,16 +26,19 @@ public class ShowQRCodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_qrcode);
+
+
+        Bundle b = getIntent().getExtras();
+        String seminarId = b.getString( SEMINAR_ID );
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if ( toolbar!= null ) {
+            toolbar.setTitle(seminarId);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        Bundle b = getIntent().getExtras();
-
-        String seminarId = b.getString( SEMINAR_ID );
 
         ImageView imageView = (ImageView) findViewById(R.id.qrCode);
 
