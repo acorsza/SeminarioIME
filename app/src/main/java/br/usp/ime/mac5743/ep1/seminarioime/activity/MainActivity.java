@@ -1,6 +1,7 @@
 package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -66,15 +67,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Load seminars
-        RecyclerView seminarListView = (RecyclerView) findViewById(R.id.seminar_list);
-
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
-        seminarListView.setLayoutManager(mLinearLayoutManager);
-
         loadSeminars();
-
-        SeminarCardListAdapter seminarCardListAdapter = new SeminarCardListAdapter(seminarList, this);
-        seminarListView.setAdapter(seminarCardListAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +98,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int which) {
                 if (RestAPIUtil.addSeminar(input.getText().toString())) {
                     Toast.makeText(getApplicationContext(), getString(R.string.seminar_add_success), Toast.LENGTH_LONG).show();
+                    loadSeminars();
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.seminar_add_failed), Toast.LENGTH_LONG).show();
                 }
@@ -149,16 +143,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadSeminars() {
-
-        seminarList = new ArrayList<>();
-
         try {
+            seminarList = new ArrayList<>();
+            RecyclerView seminarListView = (RecyclerView) findViewById(R.id.seminar_list);
+
+            LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+            seminarListView.setLayoutManager(mLinearLayoutManager);
             JSONArray ja = RestAPIUtil.getAllSeminars().getJSONArray("data");
 
             for (int i = 0; i < ja.length(); i++) {
                 JSONObject jo = ja.getJSONObject(i);
                 seminarList.add(new Seminar(jo.getString("id"), jo.getString("name")));
             }
+
+            SeminarCardListAdapter seminarCardListAdapter = new SeminarCardListAdapter(seminarList, this);
+            seminarListView.setAdapter(seminarCardListAdapter);
 
         } catch (JSONException e) {
             e.printStackTrace();
