@@ -85,7 +85,7 @@ public class EditAccountActivity extends AppCompatActivity implements Navigation
         if (id == R.id.nav_seminars) {
             goToSeminarActivity();
         } else if (id == R.id.nav_edit_account) {
-            Toast.makeText(this,"Hi",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Hi", Toast.LENGTH_LONG).show();
         } else if (id == R.id.nav_logoff) {
             //SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -134,19 +134,18 @@ public class EditAccountActivity extends AppCompatActivity implements Navigation
             } else if (role.equalsIgnoreCase(Roles.STUDENT.name())) {
                 errorMessage = RestAPIUtil.editStudent(nusp, name, password);
             }
-        }
-
-        if (errorMessage != null) {
-            Toast.makeText(this,getString(R.string.edit_account_failed),Toast.LENGTH_LONG).show();
-        } else {
-            sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(Preferences.NUSP.name(), nusp);
-            editor.putString(Preferences.FULL_NAME.name(), name);
-            editor.putString(Preferences.PASSWORD.name(), password);
-            editor.apply();
-            Toast.makeText(this,getString(R.string.edit_account_success),Toast.LENGTH_LONG).show();
-            goToSeminarActivity();
+            if (errorMessage != null) {
+                Toast.makeText(this, getString(R.string.edit_account_failed), Toast.LENGTH_LONG).show();
+            } else {
+                sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(Preferences.NUSP.name(), nusp);
+                editor.putString(Preferences.FULL_NAME.name(), name);
+                editor.putString(Preferences.PASSWORD.name(), password);
+                editor.apply();
+                Toast.makeText(this, getString(R.string.edit_account_success), Toast.LENGTH_LONG).show();
+                goToSeminarActivity();
+            }
         }
     }
 

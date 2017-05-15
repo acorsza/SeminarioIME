@@ -33,7 +33,7 @@ import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
 public class SeminarDetailsActivity extends AppCompatActivity {
 
     private static String seminarId;
-    private static String seminarName;
+    private String seminarName;
     private static ArrayList<Student> studentList;
     private static RecyclerView studentListView;
     static StudentListAdapter studentCardListAdapter;
@@ -43,7 +43,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     int ENABLE_BLUETOOTH = 1;
     int SELECT_PAIRED_DEVICE = 2;
 
-    static TextView tvSeminarName;
+    TextView tvSeminarName;
     static TextView tvSeminarCounter;
     Button cancelBtn;
     Button startListeningBtn;
@@ -56,13 +56,13 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_seminar_details);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(this.seminarId);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         Bundle b = getIntent().getExtras();
         seminarId = b.getString("seminarId");
         seminarName = b.getString("seminarName");
+        toolbar.setTitle(seminarId);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         setSeminarDateToUI();
 
         cancelBtn = (Button) findViewById(R.id.stop_listening);
@@ -159,10 +159,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     public static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            progress.setTitle("Loading");
-            progress.setMessage("Wait while loading...");
-            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-            progress.show();
+
             Bundle bundle = msg.getData();
             byte[] data = bundle.getByteArray("data");
             String string = new String(data);
@@ -186,8 +183,6 @@ public class SeminarDetailsActivity extends AppCompatActivity {
                     sendConfirmationAfterConnection();
                 }
             }
-            // To dismiss the dialog
-            progress.dismiss();
         }
     };
 
