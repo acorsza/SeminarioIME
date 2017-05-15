@@ -1,7 +1,6 @@
 package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreferences sharedPref;
-
+    private ProgressBar spinner;
     private List<Seminar> seminarList;
 
     @Override
@@ -56,11 +56,13 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.seminars);
         setSupportActionBar(toolbar);
+        spinner = (ProgressBar) findViewById(R.id.load_seminar_pb);
+        spinner.setVisibility(View.GONE);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -68,21 +70,13 @@ public class MainActivity extends AppCompatActivity
 
         // Load seminars
         loadSeminars();
+        enableProfessorFeatures();
+    }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Add a seminar
-                openDialog();
-            }
-        });
-
-        if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
-            fab.setVisibility(View.VISIBLE);
-        } else {
-            fab.setVisibility(View.INVISIBLE);
-        }
+    @Override
+    public void onResume(){
+        super.onResume();
+        spinner.setVisibility(View.GONE);
     }
 
     private void openDialog() {
@@ -205,5 +199,20 @@ public class MainActivity extends AppCompatActivity
         editor.apply();
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    private void enableProfessorFeatures() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDialog();
+            }
+        });
+        if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            fab.setVisibility(View.INVISIBLE);
+        }
     }
 }
