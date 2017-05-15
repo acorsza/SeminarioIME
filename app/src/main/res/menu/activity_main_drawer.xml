@@ -8,19 +8,6 @@
             android:title="@string/seminars" />
     </group>
 
-    <item android:title="@string/attendance">
-        <menu>
-            <item
-                android:id="@+id/nav_bluetooth"
-                android:icon="@drawable/ic_menu_camera"
-                android:title="@string/bluetooth" />
-            <item
-                android:id="@+id/nav_qrcode"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/qrcode" />
-        </menu>
-    </item>
-
     <item android:title="@string/account">
         <menu>
             <item
