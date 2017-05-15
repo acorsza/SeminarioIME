@@ -36,6 +36,7 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
     private static final String TAG = "ReadQRCodeActivity";
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
     private boolean qrCodeLigado = false;
+    private boolean ligarQRCode = false;
     private static final boolean reading = true;
 
     private SharedPreferences sharedPref;
@@ -79,8 +80,8 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
     @Override
     public void onResume() {
         super.onResume();
-        if ( qrCodeLigado ) {
-            turnOnQRCode();
+        if ( ligarQRCode && !qrCodeLigado ) {
+            startQRCode();
         }
 
     }
@@ -89,20 +90,31 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
     public void onPause() {
         super.onPause();
         if ( qrCodeLigado ) {
-            mScannerView.stopCamera();           // Stop camera on pause
+            stopQRCode();
         }
     }
 
-    private void startQRCode() {
-        mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
-        mScannerView.startCamera();          // Start camera on resume
+    private synchronized void startQRCode() {
+        if ( !qrCodeLigado ) {
+            qrCodeLigado = true;
+            mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
+            mScannerView.startCamera();          // Start camera on resume
+        }
     }
-    public void turnOnQRCode() {
-        qrCodeLigado = true;
+
+    private synchronized void stopQRCode() {
+        if (qrCodeLigado) {
+            mScannerView.stopCamera();           // Stop camera on pause
+            qrCodeLigado = false;
+        }
+    }
+
+    private void turnOnQRCode() {
+        ligarQRCode = true;
         startQRCode();
     }
 
-    public void saveResult( String seminarId ) {
+    private void saveResult( String seminarId ) {
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
 
         boolean ok = RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(), null), seminarId);
@@ -130,7 +142,7 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
         turnOnQRCode();
     }
 
-    public void executePermissionDenied() {
+    private void executePermissionDenied() {
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
         String permissionDeniedMessage = getString(R.string.qrcode_permission_denied );
 

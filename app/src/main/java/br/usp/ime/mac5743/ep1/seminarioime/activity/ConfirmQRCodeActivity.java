@@ -3,11 +3,12 @@ package br.usp.ime.mac5743.ep1.seminarioime.activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
 
-public class ConfirmQRCodeActivity extends AppCompatActivity {
+public class ConfirmQRCodeActivity extends MenuActivity {
 
     public static final String OK_FIELD = "ok";
     public static final String MESSAGE_FIELD = "message";
@@ -16,13 +17,8 @@ public class ConfirmQRCodeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_confirm_qrcode);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if ( toolbar!= null ) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+//        setContentView();
+
 
         Bundle b = getIntent().getExtras();
 
@@ -41,8 +37,13 @@ public class ConfirmQRCodeActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
+    protected int getIdTitle() {
+        return R.string.qr_code_title;
     }
+
+    @Override
+    protected int getContentView() {
+        return R.layout.activity_confirm_qrcode;
+    }
+
 }
