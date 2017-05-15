@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -136,7 +137,8 @@ public class SeminarDetailsActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 //statusMessage.setText("BluetoothActivity ativado :)");
             } else {
-                //statusMessage.setText("BluetoothActivity não ativado :(");
+                Toast.makeText(this, getString(R.string.bluetooth_is_off), Toast.LENGTH_SHORT).show();
+                stopListeningBluetooth(null);
             }
         } else if (requestCode == SELECT_PAIRED_DEVICE) {
             if (resultCode == RESULT_OK) {
@@ -211,10 +213,17 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     }
 
     public void listenBluetooth(View view) {
-        connect = new ConnectionThread();
-        connect.start();
-        cancelBtn.setVisibility(View.VISIBLE);
-        startListeningBtn.setVisibility(View.GONE);
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (btAdapter != null) {
+            if (!btAdapter.isEnabled()) {
+                Toast.makeText(this, getString(R.string.bluetooth_is_off), Toast.LENGTH_SHORT).show();
+            } else {
+                connect = new ConnectionThread();
+                connect.start();
+                cancelBtn.setVisibility(View.VISIBLE);
+                startListeningBtn.setVisibility(View.GONE);
+            }
+        }
     }
 
     public void stopListeningBluetooth(View view) {

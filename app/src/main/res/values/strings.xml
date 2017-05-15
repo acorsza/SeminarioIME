@@ -85,6 +85,7 @@
     <string name="qr_code_title">QR Code</string>
     <string name="near_devices">Near devices</string>
     <string name="paired_devices">Paired devices</string>
+    <string name="bluetooth_is_off">Bluetooth is off</string>
 
     <!-- Roles -->
     <string-array name="roles">
