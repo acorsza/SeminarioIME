@@ -1,6 +1,5 @@
 package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -181,9 +180,11 @@ public class SeminarDetailsActivity extends AppCompatActivity {
                             tvSeminarCounter.setText("0 Students");
                         }
                     }
+                } else {
+                    //statusMessage.setText("Ocorreu um erro durante a conexão D:");
                 }
             } else if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
-                if (string != null) {
+                if (!string.isEmpty()) {
                     sendConfirmationAfterConnection();
                 }
             }
@@ -242,13 +243,5 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         connect.cancel();
         connect = new ConnectionThread();
         connect.start();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (connect != null) {
-            connect.cancel();
-        }
-        super.onBackPressed();
     }
 }
