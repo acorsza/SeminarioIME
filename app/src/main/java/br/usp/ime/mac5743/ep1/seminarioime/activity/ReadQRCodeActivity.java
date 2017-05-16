@@ -1,43 +1,30 @@
 package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
 
-
-import br.usp.ime.mac5743.ep1.seminarioime.R;
-
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
-import java.util.Arrays;
-
+import br.usp.ime.mac5743.ep1.seminarioime.R;
 import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
 import br.usp.ime.mac5743.ep1.seminarioime.util.Preferences;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
-    public static final String SEMINAR_ID = "seminarId";
-
     private ZXingScannerView mScannerView;
-    private static final String TAG = "ReadQRCodeActivity";
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
     private boolean qrCodeLigado = false;
     private boolean ligarQRCode = false;
-    private static final boolean reading = true;
 
     private SharedPreferences sharedPref;
 
@@ -46,7 +33,6 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
     public void onCreate(Bundle state) {
         super.onCreate(state);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String nusp = sharedPref.getString(Preferences.NUSP.name(), null);
         mScannerView = new ZXingScannerView(this);   // Programmatically initialize the scanner view
         mScannerView.setKeepScreenOn( true );
         mScannerView.setAutoFocus( true );
@@ -55,8 +41,10 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if ( toolbar!= null ) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            if ( getSupportActionBar()!= null ) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
         }
 
         if (ContextCompat.checkSelfPermission(this,

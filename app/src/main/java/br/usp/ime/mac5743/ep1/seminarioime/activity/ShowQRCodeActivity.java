@@ -19,7 +19,6 @@ import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
 
 public class ShowQRCodeActivity extends AppCompatActivity {
-    private String seminarId;
     public static final String SEMINAR_ID = "seminarId";
 
     @Override
@@ -35,8 +34,10 @@ public class ShowQRCodeActivity extends AppCompatActivity {
         if ( toolbar!= null ) {
             toolbar.setTitle(seminarId);
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            if ( getSupportActionBar() != null ) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
         }
 
 
@@ -56,7 +57,7 @@ public class ShowQRCodeActivity extends AppCompatActivity {
         }
     }
 
-    Bitmap encodeAsBitmap(String str, int size) throws WriterException {
+    private Bitmap encodeAsBitmap(String str, int size) throws WriterException {
         BitMatrix result;
         try {
             result = new MultiFormatWriter().encode(str,
