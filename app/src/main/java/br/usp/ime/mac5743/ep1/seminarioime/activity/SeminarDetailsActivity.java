@@ -138,7 +138,6 @@ public class SeminarDetailsActivity extends AppCompatActivity {
                 //statusMessage.setText("BluetoothActivity ativado :)");
             } else {
                 Toast.makeText(this, getString(R.string.bluetooth_is_off), Toast.LENGTH_SHORT).show();
-                stopListeningBluetooth(null);
             }
         } else if (requestCode == SELECT_PAIRED_DEVICE) {
             if (resultCode == RESULT_OK) {
