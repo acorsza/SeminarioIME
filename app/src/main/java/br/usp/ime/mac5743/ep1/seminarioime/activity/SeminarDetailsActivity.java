@@ -1,6 +1,5 @@
 package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +38,6 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     private static ArrayList<Student> studentList;
     private static RecyclerView studentListView;
     static StudentListAdapter studentCardListAdapter;
-    static ProgressDialog progress;
 
 
     int ENABLE_BLUETOOTH = 1;
@@ -69,8 +68,6 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         cancelBtn = (Button) findViewById(R.id.stop_listening);
         startListeningBtn = (Button) findViewById(R.id.listen_bluetooth);
         cancelBtn.setVisibility(View.GONE);
-
-        progress = new ProgressDialog(this);
 
         if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
             LinearLayout ln = (LinearLayout) findViewById(R.id.professor_actions_layout);
@@ -115,11 +112,16 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
     public void confirmAttendanceViaBluetooth(View view) {
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (btAdapter != null) {
+        if (btAdapter == null) {
+            Snackbar.make(view, "Que pena! Hardware BluetoothActivity não está funcionando :(", Snackbar.LENGTH_LONG).show();
+        } else {
+            Snackbar.make(view, "Ótimo! Hardware BluetoothActivity está funcionando :)", Snackbar.LENGTH_LONG).show();
             if (!btAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, ENABLE_BLUETOOTH);
+                Snackbar.make(view, "Solicitando ativação do BluetoothActivity...", Snackbar.LENGTH_LONG).show();
             } else {
+                Snackbar.make(view, "BluetoothActivity já ativado :)", Snackbar.LENGTH_LONG).show();
                 searchPairedDevices(view);
             }
         }
@@ -178,15 +180,16 @@ public class SeminarDetailsActivity extends AppCompatActivity {
                             tvSeminarCounter.setText("0 Students");
                         }
                     }
+                } else {
+                    //statusMessage.setText("Ocorreu um erro durante a conexão D:");
                 }
             } else if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
-                if (string != null) {
+                if (!string.isEmpty()) {
                     sendConfirmationAfterConnection();
                 }
             }
         }
     };
-
 
     private static void setStudentsList() {
         ArrayList<JSONObject> arrayJo = RestAPIUtil.getAttendanceList(seminarId);
@@ -239,13 +242,5 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         connect.cancel();
         connect = new ConnectionThread();
         connect.start();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (connect != null) {
-            connect.cancel();
-        }
-        super.onBackPressed();
     }
 }
