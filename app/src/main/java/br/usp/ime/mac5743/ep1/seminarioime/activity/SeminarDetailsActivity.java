@@ -39,7 +39,6 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     private static ArrayList<Student> studentList;
     private static RecyclerView studentListView;
     static StudentListAdapter studentCardListAdapter;
-    static ProgressDialog progress;
 
 
     int ENABLE_BLUETOOTH = 1;
@@ -70,8 +69,6 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         cancelBtn = (Button) findViewById(R.id.stop_listening);
         startListeningBtn = (Button) findViewById(R.id.listen_bluetooth);
         cancelBtn.setVisibility(View.GONE);
-
-        progress = new ProgressDialog(this);
 
         if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
             LinearLayout ln = (LinearLayout) findViewById(R.id.professor_actions_layout);
