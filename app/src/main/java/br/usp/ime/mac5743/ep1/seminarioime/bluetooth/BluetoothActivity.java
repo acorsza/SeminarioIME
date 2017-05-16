@@ -18,10 +18,6 @@ import java.util.Set;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
 
-/**
- * Created by aderleifilho on 30/04/17.
- */
-
 public class BluetoothActivity extends AppCompatActivity {
 
     ArrayAdapter<String> pairedAdapter;
@@ -62,7 +58,7 @@ public class BluetoothActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 String result = (String) lvNear.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Confirmation sent", Toast.LENGTH_SHORT).show();
 
                 String devAddress = result.substring(result.indexOf("\n") + 1, result.length());
                 String devName = btAdapter.getRemoteDevice(devAddress).getName();
@@ -81,7 +77,7 @@ public class BluetoothActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 String result = (String) lvPaired.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Confirmation sent", Toast.LENGTH_SHORT).show();
 
                 String devAddress = result.substring(result.indexOf("\n") + 1, result.length());
                 String devName = btAdapter.getRemoteDevice(devAddress).getName();

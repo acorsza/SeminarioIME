@@ -36,17 +36,17 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
     private static final String TAG = "ReadQRCodeActivity";
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
     private boolean qrCodeLigado = false;
+    private boolean ligarQRCode = false;
     private static final boolean reading = true;
 
     private SharedPreferences sharedPref;
 
 
-    private String nusp;
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        nusp = sharedPref.getString(Preferences.NUSP.name(), null);
+        String nusp = sharedPref.getString(Preferences.NUSP.name(), null);
         mScannerView = new ZXingScannerView(this);   // Programmatically initialize the scanner view
         mScannerView.setKeepScreenOn( true );
         mScannerView.setAutoFocus( true );
@@ -80,8 +80,8 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
     @Override
     public void onResume() {
         super.onResume();
-        if ( qrCodeLigado ) {
-            turnOnQRCode();
+        if ( ligarQRCode && !qrCodeLigado ) {
+            startQRCode();
         }
 
     }
@@ -90,20 +90,31 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
     public void onPause() {
         super.onPause();
         if ( qrCodeLigado ) {
-            mScannerView.stopCamera();           // Stop camera on pause
+            stopQRCode();
         }
     }
 
-    private void startQRCode() {
-        mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
-        mScannerView.startCamera();          // Start camera on resume
+    private synchronized void startQRCode() {
+        if ( !qrCodeLigado ) {
+            qrCodeLigado = true;
+            mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
+            mScannerView.startCamera();          // Start camera on resume
+        }
     }
-    public void turnOnQRCode() {
-        qrCodeLigado = true;
+
+    private synchronized void stopQRCode() {
+        if (qrCodeLigado) {
+            mScannerView.stopCamera();           // Stop camera on pause
+            qrCodeLigado = false;
+        }
+    }
+
+    private void turnOnQRCode() {
+        ligarQRCode = true;
         startQRCode();
     }
 
-    public void saveResult( String seminarId ) {
+    private void saveResult( String seminarId ) {
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
 
         boolean ok = RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(), null), seminarId);
@@ -119,8 +130,6 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
 
     @Override
     public void handleResult(Result rawResult) {
-        Log.d(TAG, rawResult.getText()); // Prints scan results
-        Log.d(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         // If you would like to resume scanning, call this method below:
 //        mScannerView.resumeCameraPreview(this);
         saveResult( rawResult.getText() );
@@ -131,7 +140,7 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
         turnOnQRCode();
     }
 
-    public void executePermissionDenied() {
+    private void executePermissionDenied() {
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
         String permissionDeniedMessage = getString(R.string.qrcode_permission_denied );
 
@@ -150,13 +159,9 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Log.d( "Testes", "Concedeu!!!!"  );
                     executePermissionGranted();
 
                 } else {
-
-                    Log.d( "Testes", "Concedeu nada!!!!"  );
                     executePermissionDenied();
                 }
             }

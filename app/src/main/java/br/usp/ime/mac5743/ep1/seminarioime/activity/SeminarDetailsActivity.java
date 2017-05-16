@@ -3,25 +3,26 @@ package br.usp.ime.mac5743.ep1.seminarioime.activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
-import br.usp.ime.mac5743.ep1.seminarioime.adapter.SeminarCardListAdapter;
 import br.usp.ime.mac5743.ep1.seminarioime.adapter.StudentListAdapter;
 import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
 import br.usp.ime.mac5743.ep1.seminarioime.bluetooth.BluetoothActivity;
@@ -34,16 +35,18 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
     private static String seminarId;
     private String seminarName;
-    private ArrayList<Student> studentList;
-    private RecyclerView studentListView;
+    private static ArrayList<Student> studentList;
+    private static RecyclerView studentListView;
+    static StudentListAdapter studentCardListAdapter;
 
 
     int ENABLE_BLUETOOTH = 1;
     int SELECT_PAIRED_DEVICE = 2;
 
     TextView tvSeminarName;
-    TextView tvSeminarCounter;
-    static TextView statusMessage;
+    static TextView tvSeminarCounter;
+    Button cancelBtn;
+    Button startListeningBtn;
     private static ConnectionThread connect;
     private static SharedPreferences sharedPref;
 
@@ -53,16 +56,18 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_seminar_details);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(this.seminarId);
+        Bundle b = getIntent().getExtras();
+        seminarId = b.getString("seminarId");
+        seminarName = b.getString("seminarName");
+        toolbar.setTitle(seminarId);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        Bundle b = getIntent().getExtras();
-        this.seminarId = b.getString("seminarId");
-        this.seminarName = b.getString("seminarName");
-
         setSeminarDateToUI();
+
+        cancelBtn = (Button) findViewById(R.id.stop_listening);
+        startListeningBtn = (Button) findViewById(R.id.listen_bluetooth);
+        cancelBtn.setVisibility(View.GONE);
 
         if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
             LinearLayout ln = (LinearLayout) findViewById(R.id.professor_actions_layout);
@@ -71,20 +76,17 @@ public class SeminarDetailsActivity extends AppCompatActivity {
             LinearLayout ln2 = (LinearLayout) findViewById(R.id.student_actions_layout);
             ln2.setVisibility(View.VISIBLE);
         }
-
-
     }
 
     private void setSeminarDateToUI() {
 
         setStudentsList();
 
-        statusMessage = (TextView) findViewById(R.id.status_message);
         tvSeminarName = (TextView) findViewById(R.id.seminar_title);
         tvSeminarCounter = (TextView) findViewById(R.id.seminar_counter);
 
-        tvSeminarName.setText(this.seminarName);
-        if (this.studentList != null) {
+        tvSeminarName.setText(seminarName);
+        if (studentList != null) {
             tvSeminarCounter.setText(this.studentList.size() + " " + getString(R.string.student_counter));
         } else {
             tvSeminarCounter.setText("0 " + getString(R.string.student_counter));
@@ -96,8 +98,9 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         studentListView.setLayoutManager(mLinearLayoutManager);
 
-        StudentListAdapter studentCardListAdapter = new StudentListAdapter(studentList, this);
+        studentCardListAdapter = new StudentListAdapter(studentList, this);
         studentListView.setAdapter(studentCardListAdapter);
+        studentListView.refreshDrawableState();
 
     }
 
@@ -134,25 +137,24 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
         if (requestCode == ENABLE_BLUETOOTH) {
             if (resultCode == RESULT_OK) {
-                statusMessage.setText("BluetoothActivity ativado :)");
+                //statusMessage.setText("BluetoothActivity ativado :)");
             } else {
-                statusMessage.setText("BluetoothActivity não ativado :(");
+                Toast.makeText(this, getString(R.string.bluetooth_is_off), Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == SELECT_PAIRED_DEVICE) {
             if (resultCode == RESULT_OK) {
-                statusMessage.setText("Você selecionou " + data.getStringExtra("btDevName") + "\n"
-                        + data.getStringExtra("btDevAddress"));
+                //statusMessage.setText("Você selecionou " + data.getStringExtra("btDevName") + "\n"
+                //         + data.getStringExtra("btDevAddress"));
                 connect = new ConnectionThread(data.getStringExtra("btDevAddress"));
                 connect.start();
             } else {
-                statusMessage.setText("Nenhum dispositivo selecionado :(");
+                //statusMessage.setText("Nenhum dispositivo selecionado :(");
             }
         }
 
     }
 
     public void searchPairedDevices(View view) {
-
         Intent searchPairedDevicesIntent = new Intent(this, BluetoothActivity.class);
         startActivityForResult(searchPairedDevicesIntent, SELECT_PAIRED_DEVICE);
     }
@@ -160,56 +162,85 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     public static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+
             Bundle bundle = msg.getData();
             byte[] data = bundle.getByteArray("data");
             String string = new String(data);
 
             if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
+                restartBL();
                 if (string != null) {
                     if (RestAPIUtil.confirmAttendance(string, seminarId)) {
-                        statusMessage.setText("Aluno confirmado");
+                        setStudentsList();
+                        studentCardListAdapter.setStudents(studentList);
+                        studentListView.setAdapter(studentCardListAdapter);
+                        if (studentList != null) {
+                            tvSeminarCounter.setText(studentList.size() + " are registered");
+                        } else {
+                            tvSeminarCounter.setText("0 Students");
+                        }
                     }
                 } else {
-                    statusMessage.setText("Ocorreu um erro durante a conexão D:");
+                    //statusMessage.setText("Ocorreu um erro durante a conexão D:");
                 }
             } else if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
-                if (string != null) {
+                if (!string.isEmpty()) {
                     sendConfirmationAfterConnection();
                 }
             }
         }
     };
 
-
-    private void setStudentsList() {
-
-        ArrayList<JSONObject> arrayJo = RestAPIUtil.getAttendanceList(this.seminarId);
-        this.studentList = new ArrayList<>();
-        for (JSONObject jo : arrayJo) {
-            Student student = new Student();
-            try {
-                student.setNusp(jo.getString("student_nusp"));
-                student.setName(RestAPIUtil.getStudent(student.getNusp()).getJSONObject("data").getString("name"));
-            } catch (Exception e) {
-                e.printStackTrace();
+    private static void setStudentsList() {
+        ArrayList<JSONObject> arrayJo = RestAPIUtil.getAttendanceList(seminarId);
+        studentList = new ArrayList<>();
+        if (arrayJo != null) {
+            for (JSONObject jo : arrayJo) {
+                Student student = new Student();
+                try {
+                    student.setNusp(jo.getString("student_nusp"));
+                    student.setName(RestAPIUtil.getStudent(student.getNusp()).getJSONObject("data").getString("name"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                studentList.add(student);
             }
-            studentList.add(student);
         }
-
     }
 
     public void generateQRCode(View view) {
         Intent intent = new Intent(this, ShowQRCodeActivity.class);
-        intent.putExtra( ShowQRCodeActivity.SEMINAR_ID, seminarId );
-        startActivity( intent );
+        intent.putExtra(ShowQRCodeActivity.SEMINAR_ID, seminarId);
+        startActivity(intent);
     }
 
     public void listenBluetooth(View view) {
-        connect = new ConnectionThread();
-        connect.start();
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (btAdapter != null) {
+            if (!btAdapter.isEnabled()) {
+                Toast.makeText(this, getString(R.string.bluetooth_is_off), Toast.LENGTH_SHORT).show();
+            } else {
+                connect = new ConnectionThread();
+                connect.start();
+                cancelBtn.setVisibility(View.VISIBLE);
+                startListeningBtn.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    public void stopListeningBluetooth(View view) {
+        connect.cancel();
+        cancelBtn.setVisibility(View.GONE);
+        startListeningBtn.setVisibility(View.VISIBLE);
     }
 
     private static void sendConfirmationAfterConnection() {
         connect.write(sharedPref.getString(Preferences.NUSP.name(), null).getBytes());
+    }
+
+    public static void restartBL() {
+        connect.cancel();
+        connect = new ConnectionThread();
+        connect.start();
     }
 }

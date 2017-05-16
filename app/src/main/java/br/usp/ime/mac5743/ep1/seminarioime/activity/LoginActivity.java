@@ -22,10 +22,6 @@ import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // JSON Values
-    private final String DATA = "data";
-    private final String NAME = "name";
-
     private EditText etNusp;
     private EditText etPassword;
     private Spinner spRole;
@@ -82,12 +78,13 @@ public class LoginActivity extends AppCompatActivity {
     private void setAutoConnectOn() {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(Preferences.AUTO_CONNECT.name(), true);
-        editor.commit();
+        editor.apply();
     }
 
     private void saveUserDataToPreferences() {
         try {
             JSONObject jo;
+            String DATA = "data";
             if (role.equalsIgnoreCase(Roles.PROFESSOR.name())) {
                 jo = RestAPIUtil.getProfessor(nusp).getJSONObject(DATA);
             } else {
@@ -96,11 +93,12 @@ public class LoginActivity extends AppCompatActivity {
 
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(Preferences.NUSP.name(), nusp);
+            String NAME = "name";
             editor.putString(Preferences.NAME.name(), jo.getString(NAME).split(" ")[0]);
             editor.putString(Preferences.FULL_NAME.name(), jo.getString(NAME));
             editor.putString(Preferences.PASSWORD.name(), password);
             editor.putString(Preferences.ROLE.name(), role);
-            editor.commit();
+            editor.apply();
         } catch (JSONException e) {
             e.printStackTrace();
         }

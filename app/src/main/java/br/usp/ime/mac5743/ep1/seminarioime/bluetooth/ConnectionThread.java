@@ -1,16 +1,11 @@
 package br.usp.ime.mac5743.ep1.seminarioime.bluetooth;
 
-/**
- * Created by aderleifilho on 07/05/17.
- */
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,9 +44,7 @@ public class ConnectionThread extends Thread{
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         if(this.server) {
-
             try {
-
                 btServerSocket = btAdapter.listenUsingRfcommWithServiceRecord("Super Bluetooth", UUID.fromString(myUUID));
                 btSocket = btServerSocket.accept();
 
@@ -62,7 +55,6 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
-                toMainActivity("---N".getBytes());
             }
 
         } else {
@@ -81,7 +73,6 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
-                toMainActivity("---N".getBytes());
             }
 
         }
@@ -107,7 +98,6 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
-                toMainActivity("---N".getBytes());
             }
         }
 
@@ -131,8 +121,6 @@ public class ConnectionThread extends Thread{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            toMainActivity("---N".getBytes());
         }
     }
 
@@ -141,12 +129,15 @@ public class ConnectionThread extends Thread{
         try {
 
             running = false;
-            btServerSocket.close();
-            btSocket.close();
 
+            if(btServerSocket != null) {
+                btServerSocket.close();
+            }
+            if(btSocket != null) {
+                btSocket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        running = false;
     }
 }

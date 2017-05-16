@@ -33,7 +33,6 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText etName;
     private EditText etPassword;
     private Spinner spRole;
-    private SharedPreferences sharedPref;
 
     private String nusp;
     private String name;
@@ -61,8 +60,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void requestRegistrationOnServer(View view) {
-        Log.d(CLASS_NAME, "requestRegistrationOnServer");
-
         String errorMessage = null;
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 
@@ -94,29 +91,28 @@ public class RegisterActivity extends AppCompatActivity {
             } else if (role.equalsIgnoreCase(Roles.STUDENT.name())) {
                 errorMessage = RestAPIUtil.addStudent(nusp, name, password);
             }
-        }
-
-        if (errorMessage != null) {
-            alertDialog.setTitle(getString(R.string.registration_failed));
-            alertDialog.setMessage(errorMessage);
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
-        } else {
-            saveUserDataToPreferences();
-            alertDialog.setTitle(getString(R.string.registration_succeeded));
-            alertDialog.setMessage(getString(R.string.account_created));
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            loadDashboard(alertDialog);
-                        }
-                    });
-            alertDialog.show();
+            if (errorMessage != null) {
+                alertDialog.setTitle(getString(R.string.registration_failed));
+                alertDialog.setMessage(errorMessage);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            } else {
+                saveUserDataToPreferences();
+                alertDialog.setTitle(getString(R.string.registration_succeeded));
+                alertDialog.setMessage(getString(R.string.account_created));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                loadDashboard(alertDialog);
+                            }
+                        });
+                alertDialog.show();
+            }
         }
     }
 
@@ -127,7 +123,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void saveUserDataToPreferences() {
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(Preferences.NUSP.name(), nusp);
         editor.putString(Preferences.NAME.name(), name.split(" ")[0]);

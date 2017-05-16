@@ -42,13 +42,6 @@
 
         <View style="@style/horizontal_line" />
 
-        <TextView
-            android:id="@+id/status_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            tools:text="Buetooth ok" />
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/seminar_attendance_list"
             android:layout_width="match_parent"
@@ -107,6 +100,13 @@
             android:layout_height="wrap_content"
             android:onClick="listenBluetooth"
             android:text="@string/listen_bluetooth_devices" />
+
+        <Button
+            android:id="@+id/stop_listening"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="stopListeningBluetooth"
+            android:text="@string/stop_listening_bluetooth" />
 
     </LinearLayout>
 

@@ -1,8 +1,6 @@
 package br.usp.ime.mac5743.ep1.seminarioime.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
-import br.usp.ime.mac5743.ep1.seminarioime.activity.SeminarDetailsActivity;
-import br.usp.ime.mac5743.ep1.seminarioime.pojo.Seminar;
 import br.usp.ime.mac5743.ep1.seminarioime.pojo.Student;
-
-import static br.usp.ime.mac5743.ep1.seminarioime.R.string.seminars;
 
 /**
  * Created by aderleifilho on 11/05/17.
@@ -26,9 +20,6 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
 
     private final String CLASS_NAME = "StudentListAdapter";
 
-    private List<Student> mStudents;
-    private Context mContext;
-
     public class StudentViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvNusp;
@@ -36,8 +27,8 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
 
         StudentViewHolder(View itemView, Context pContext, final List<Student> pStudents) {
             super(itemView);
-            mContext = pContext;
-            mStudents = pStudents;
+            Context mContext = pContext;
+            List<Student> mStudents = pStudents;
             tvNusp = (TextView) itemView.findViewById(R.id.student_list_item_nusp);
             tvName = (TextView) itemView.findViewById(R.id.student_list_item_name);
         }
@@ -49,6 +40,10 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     public StudentListAdapter(List<Student> pStudents, Context pContext) {
         this.listStudents = pStudents;
         this.context = pContext;
+    }
+
+    public void setStudents(List<Student> pStudents) {
+        this.listStudents = pStudents;
     }
 
     @Override

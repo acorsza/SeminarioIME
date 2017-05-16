@@ -1,5 +1,7 @@
 package br.usp.ime.mac5743.ep1.seminarioime.adapter;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -29,20 +32,21 @@ public class SeminarCardListAdapter extends RecyclerView.Adapter<SeminarCardList
         TextView seminarId;
         Context context;
         List<Seminar> seminars;
+        ProgressBar spinner;
 
-        SeminarViewHolder(View itemView, Context pContext, final List<Seminar> pSeminars) {
+        SeminarViewHolder(View itemView, final Context pContext, final List<Seminar> pSeminars) {
             super(itemView);
             context = pContext;
             seminars = pSeminars;
             seminarCardView = (CardView) itemView.findViewById(R.id.seminar_cardview);
             seminarId = (TextView) itemView.findViewById(R.id.seminar_cardview_id);
             seminarName = (TextView) itemView.findViewById(R.id.seminar_cardview_title);
-
+            spinner = (ProgressBar) ((Activity)pContext).getWindow().getDecorView().findViewById(R.id.load_seminar_pb);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    spinner.setVisibility(View.VISIBLE);
                     int i = Integer.valueOf(v.getTag().toString());
-
                     Intent intent = new Intent(context, SeminarDetailsActivity.class);
                     Bundle b = new Bundle();
                     b.putString("seminarId", seminars.get(i).getSeminarId());

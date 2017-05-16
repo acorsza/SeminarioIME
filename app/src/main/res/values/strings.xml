@@ -70,6 +70,9 @@
     <string name="seminar_add_failed">Failed to add seminar.</string>
     <string name="generate_qrcode">Generate Seminar QRCode</string>
     <string name="listen_bluetooth_devices">Listen Bluetooth devices</string>
+    <string name="attendance">Attendance</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="qrcode">QRCode</string>
 
     <string name="qrCode_label">QRCode</string>
     <string name="qrcode_inititalization">Preparing to read QRCode</string>
@@ -77,6 +80,12 @@
     <string name="ok_qrcode_message">Successful! You have just confirmed your presence! (SeminarId: %s)</string>
     <string name="error_qrcode_message">Fail to confirm the presence! (SeminarId: %s)</string>
     <string name="qrcode_show_code">QRCode ready! Bring the other device closer.</string>
+    <string name="stop_listening_bluetooth">Stop listening Bluetooth</string>
+
+    <string name="qr_code_title">QR Code</string>
+    <string name="near_devices">Near devices</string>
+    <string name="paired_devices">Paired devices</string>
+    <string name="bluetooth_is_off">Bluetooth is off</string>
 
     <!-- Roles -->
     <string-array name="roles">
