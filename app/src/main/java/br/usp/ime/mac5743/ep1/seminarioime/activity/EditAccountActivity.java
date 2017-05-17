@@ -29,7 +29,7 @@ import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
 public class EditAccountActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String CLASS_NAME = "EditAccountActivity";
-    private EditText etNusp;
+    private TextView etNusp;
     private EditText etName;
     private EditText etPassword;
     private SharedPreferences sharedPref;
@@ -37,6 +37,7 @@ public class EditAccountActivity extends AppCompatActivity implements Navigation
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_edit_account);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -51,10 +52,27 @@ public class EditAccountActivity extends AppCompatActivity implements Navigation
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        fillEditTextForm();
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString("PASSWD", etPassword.getText().toString() );
+        savedInstanceState.putString( "FULLNAME", etName.getText().toString() );
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        etName.setText(savedInstanceState.getString("FULLNAME"));
+        etPassword.setText(savedInstanceState.getString("PASSWD"));
     }
 
     private void fillEditTextForm() {
-        etNusp = (EditText) findViewById(R.id.nusp);
+        etNusp = (TextView) findViewById(R.id.nusp);
         etPassword = (EditText) findViewById(R.id.password);
         etName = (EditText) findViewById(R.id.name);
 
@@ -72,7 +90,7 @@ public class EditAccountActivity extends AppCompatActivity implements Navigation
         String name = sharedPref.getString(Preferences.NAME.name(), null);
         tvName.setText(name);
         tvNusp.setText(nusp);
-        fillEditTextForm();
+//        fillEditTextForm();
         return true;
     }
 
@@ -85,7 +103,6 @@ public class EditAccountActivity extends AppCompatActivity implements Navigation
         if (id == R.id.nav_seminars) {
             goToSeminarActivity();
         } else if (id == R.id.nav_edit_account) {
-            Toast.makeText(this, "Hi", Toast.LENGTH_LONG).show();
         } else if (id == R.id.nav_logoff) {
             //SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -138,6 +155,7 @@ public class EditAccountActivity extends AppCompatActivity implements Navigation
                 sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(Preferences.NUSP.name(), nusp);
+                editor.putString(Preferences.NAME.name(), name.split(" ")[0]);
                 editor.putString(Preferences.FULL_NAME.name(), name);
                 editor.putString(Preferences.PASSWORD.name(), password);
                 editor.apply();

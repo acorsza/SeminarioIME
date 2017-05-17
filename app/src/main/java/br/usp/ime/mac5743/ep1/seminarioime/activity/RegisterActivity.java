@@ -54,6 +54,26 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString("PASSWD", etPassword.getText().toString() );
+        savedInstanceState.putString( "FULLNAME", etName.getText().toString() );
+        savedInstanceState.putString( "NUSP", etNusp.getText().toString() );
+        savedInstanceState.putInt( "ROLE", spRole.getSelectedItemPosition() );
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        etNusp.setText(savedInstanceState.getString("NUSP"));
+        etName.setText(savedInstanceState.getString("FULLNAME"));
+        etPassword.setText(savedInstanceState.getString("PASSWD"));
+        spRole.setSelection( savedInstanceState.getInt("ROLE") );
+    }
+
+
+    @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
