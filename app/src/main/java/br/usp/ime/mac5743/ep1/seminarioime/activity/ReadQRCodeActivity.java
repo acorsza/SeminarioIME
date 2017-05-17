@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,13 +26,17 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
     private boolean qrCodeLigado = false;
     private boolean ligarQRCode = false;
+    public static final String SEMINAR_ID = "seminarId";
 
     private SharedPreferences sharedPref;
-
+    private String seminarId;
 
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
+        Bundle b = getIntent().getExtras();
+        this.seminarId = b.getString("seminarId");
+
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mScannerView = new ZXingScannerView(this);   // Programmatically initialize the scanner view
         mScannerView.setKeepScreenOn( true );
@@ -105,14 +110,20 @@ public class ReadQRCodeActivity extends AppCompatActivity implements ZXingScanne
     private void saveResult( String seminarId ) {
         Intent intent = new Intent(this, ConfirmQRCodeActivity.class);
 
-        boolean ok = RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(), null), seminarId);
+        boolean ok = false;
+        if ( this.seminarId.equals( seminarId ) ) {
+            ok = RestAPIUtil.confirmAttendance(sharedPref.getString(Preferences.NUSP.name(), null), seminarId);
+            if ( !ok ) {
+                String errorMessage = getString(R.string.error_qrcode_message );
+                intent.putExtra( ConfirmQRCodeActivity.MESSAGE_FIELD, errorMessage );
+            }
+        } else {
+            String errorMessage = getString(R.string.incorrect_qrcode_message );
+            intent.putExtra( ConfirmQRCodeActivity.MESSAGE_FIELD, errorMessage );
+        }
         intent.putExtra( ConfirmQRCodeActivity.OK_FIELD, ok );
         intent.putExtra( ConfirmQRCodeActivity.SEMINAR_ID, seminarId );
-        if ( !ok ) {
-            String errorMessage = getString(R.string.error_qrcode_message );
-            intent.putExtra( ConfirmQRCodeActivity.MESSAGE_FIELD, errorMessage );
 
-        }
         startActivity( intent );
     }
 
