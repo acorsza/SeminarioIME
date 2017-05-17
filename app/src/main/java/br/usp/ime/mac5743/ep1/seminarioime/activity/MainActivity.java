@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences sharedPref;
     private ProgressBar spinner;
     private List<Seminar> seminarList;
-    final EditText input = new EditText(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.seminar_add_title));
 
-
+        final EditText input = new EditText(this);
         input.setPadding(50, 20, 50, 20);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
