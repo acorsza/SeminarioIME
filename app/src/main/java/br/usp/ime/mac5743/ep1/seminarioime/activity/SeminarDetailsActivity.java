@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -20,7 +21,12 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
 import br.usp.ime.mac5743.ep1.seminarioime.adapter.StudentListAdapter;
@@ -33,22 +39,25 @@ import br.usp.ime.mac5743.ep1.seminarioime.util.Roles;
 
 public class SeminarDetailsActivity extends AppCompatActivity {
 
-    private static String seminarId;
+    private String seminarId;
     private String seminarName;
-    private static ArrayList<Student> studentList;
-    private static RecyclerView studentListView;
-    static StudentListAdapter studentCardListAdapter;
+    private ArrayList<Student> studentList;
+    private RecyclerView studentListView;
+    private StudentListAdapter studentCardListAdapter;
 
 
     int ENABLE_BLUETOOTH = 1;
     int SELECT_PAIRED_DEVICE = 2;
 
     TextView tvSeminarName;
-    static TextView tvSeminarCounter;
+    private TextView tvSeminarCounter;
     Button cancelBtn;
     Button startListeningBtn;
-    private static ConnectionThread connect;
-    private static SharedPreferences sharedPref;
+    //    private ConnectionThread connect;
+    SharedPreferences sharedPref;
+
+    private boolean isListening = false;
+    private Set<ConnectionThread> connections = Collections.synchronizedSet(new HashSet<ConnectionThread>());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +138,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
     public void confirmAttendanceViaQRCode(View view) {
         Intent intent = new Intent(this, ReadQRCodeActivity.class);
+        intent.putExtra(ReadQRCodeActivity.SEMINAR_ID, this.seminarId);
         startActivity(intent);
     }
 
@@ -145,7 +155,10 @@ public class SeminarDetailsActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 //statusMessage.setText("Você selecionou " + data.getStringExtra("btDevName") + "\n"
                 //         + data.getStringExtra("btDevAddress"));
-                connect = new ConnectionThread(data.getStringExtra("btDevAddress"));
+
+                ConnectionThread connect = new ConnectionThread(data.getStringExtra("btDevAddress"));
+                connect.setHandler(new MyHandler(this, connect));
+                connections.add(connect);
                 connect.start();
             } else {
                 //statusMessage.setText("Nenhum dispositivo selecionado :(");
@@ -159,40 +172,77 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         startActivityForResult(searchPairedDevicesIntent, SELECT_PAIRED_DEVICE);
     }
 
-    public static Handler handler = new Handler() {
+    private static class MyHandler extends Handler {
+        private AppCompatActivity activity;
+        private ConnectionThread connection;
+        private final WeakReference<SeminarDetailsActivity> myClassWeakReference;
+
+        public MyHandler(SeminarDetailsActivity activity, ConnectionThread connection) {
+
+            this.activity = activity;
+            this.connection = connection;
+            myClassWeakReference = new WeakReference<SeminarDetailsActivity>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
 
+            Log.d("SeminarDetails", "passou:" + msg);
+
             Bundle bundle = msg.getData();
             byte[] data = bundle.getByteArray("data");
-            String string = new String(data);
-
-            if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
-                restartBL();
-                if (string != null) {
-                    if (RestAPIUtil.confirmAttendance(string, seminarId)) {
-                        setStudentsList();
-                        studentCardListAdapter.setStudents(studentList);
-                        studentListView.setAdapter(studentCardListAdapter);
-                        if (studentList != null) {
-                            tvSeminarCounter.setText(studentList.size() + " are registered");
+            String string = null;
+            if (data != null) string = new String(data);
+            SeminarDetailsActivity activity = myClassWeakReference.get();
+            if (activity.sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
+//                if (string != null) {
+                if (ConnectionThread.INIT_CONNECTION.equals(string)) {
+                    activity.restartBL();
+                } else if (bundle.getInt(ConnectionThread.ACTION_FIELD) == ConnectionThread.FINISH_ACTION) {
+                    activity.removeConnection(connection);
+                } else {
+                    if (string != null) {
+                        String[] dados = string.split(",");
+                        if (dados.length > 1 && activity.seminarId != null && activity.seminarId.equals(dados[1])) {
+                            if (RestAPIUtil.confirmAttendance(dados[0], activity.seminarId)) {
+                                activity.setStudentsList();
+                                activity.studentCardListAdapter.setStudents(activity.studentList);
+                                activity.studentListView = (RecyclerView) activity.findViewById(R.id.seminar_attendance_list);
+                                activity.studentListView.setAdapter(activity.studentCardListAdapter);
+                                activity.tvSeminarCounter = (TextView) activity.findViewById(R.id.seminar_counter);
+                                if (activity.studentList != null) {
+                                    activity.tvSeminarCounter.setText(String.format(activity.getString(R.string.student_confirmed), activity.studentList.size() + ""));
+                                } else {
+                                    activity.tvSeminarCounter.setText(activity.getString(R.string.zero_students_confirmed));
+                                }
+                                Toast.makeText(activity, String.format(activity.getString(R.string.student_confirmed), dados[0]), Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            tvSeminarCounter.setText("0 Students");
+
+                            Toast.makeText(activity, activity.getString(R.string.incorret_seminar), Toast.LENGTH_SHORT).show();
                         }
                     }
-                } else {
-                    //statusMessage.setText("Ocorreu um erro durante a conexão D:");
+                    connection.cancel();
                 }
-            } else if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
-                if (!string.isEmpty()) {
-                    sendConfirmationAfterConnection();
+//                }
+            } else if (activity.sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
+                if (string != null && !string.isEmpty()) {
+                    if (ConnectionThread.INIT_CONNECTION.equals(string)) {
+                        activity.sendConfirmationAfterConnection(connection);
+                    } else {
+                        connection.cancel();
+                    }
+                } else if (bundle.getInt(ConnectionThread.ACTION_FIELD) == ConnectionThread.FINISH_ACTION) {
+                    activity.removeConnection(connection);
                 }
             }
         }
-    };
 
+    }
 
-    private static void setStudentsList() {
+//    private Handler handler = new MyHandler( this );
+
+    private void setStudentsList() {
         ArrayList<JSONObject> arrayJo = RestAPIUtil.getAttendanceList(seminarId);
         studentList = new ArrayList<>();
         if (arrayJo != null) {
@@ -221,27 +271,51 @@ public class SeminarDetailsActivity extends AppCompatActivity {
             if (!btAdapter.isEnabled()) {
                 Toast.makeText(this, getString(R.string.bluetooth_is_off), Toast.LENGTH_SHORT).show();
             } else {
-                connect = new ConnectionThread();
-                connect.start();
+                restartBL();
                 cancelBtn.setVisibility(View.VISIBLE);
                 startListeningBtn.setVisibility(View.GONE);
             }
         }
+        isListening = true;
     }
 
     public void stopListeningBluetooth(View view) {
-        connect.cancel();
+//        connect.cancel();
+        cancelConnections();
         cancelBtn.setVisibility(View.GONE);
         startListeningBtn.setVisibility(View.VISIBLE);
+
+        isListening = false;
     }
 
-    private static void sendConfirmationAfterConnection() {
-        connect.write(sharedPref.getString(Preferences.NUSP.name(), null).getBytes());
+    private void sendConfirmationAfterConnection(ConnectionThread connect) {
+        connect.write((sharedPref.getString(Preferences.NUSP.name(), null) + "," + seminarId).getBytes());
     }
 
-    public static void restartBL() {
-        connect.cancel();
-        connect = new ConnectionThread();
+    public synchronized void cancelConnections() {
+        for (ConnectionThread c : connections) {
+            c.cancel();
+        }
+        connections.clear();
+
+    }
+
+    public synchronized void restartBL() {
+//        connect.cancel();
+        ConnectionThread connect = new ConnectionThread();
+        connect.setHandler(new MyHandler(this, connect));
         connect.start();
+        connections.add(connect);
     }
+
+    public synchronized void removeConnection(ConnectionThread c) {
+//        connect.cancel();
+        connections.remove(c);
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        cancelConnections();
+    }
+
 }

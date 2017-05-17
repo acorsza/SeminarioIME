@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 
 import java.io.IOException;
@@ -17,25 +18,32 @@ import br.usp.ime.mac5743.ep1.seminarioime.activity.SeminarDetailsActivity;
 
 public class ConnectionThread extends Thread{
 
-    BluetoothSocket btSocket = null;
-    BluetoothServerSocket btServerSocket = null;
-    InputStream input = null;
-    OutputStream output = null;
-    String btDevAddress = null;
-    String myUUID = "00001101-0000-1000-8000-00805F9B34FB";
+    private BluetoothSocket btSocket = null;
+    private BluetoothServerSocket btServerSocket = null;
+    private InputStream input = null;
+    private OutputStream output = null;
+    private String btDevAddress = null;
+    private final String myUUID = "00001101-0000-1000-8000-00805F9B34FB";
     boolean server;
     boolean running = false;
+    private Handler handler;
+    public static final int START_ACTION = 1;
+    public static final int FINISH_ACTION = 2;
+    public static final String ACTION_FIELD = "action";
 
+    public static final String INIT_CONNECTION = "---S";
 
     public ConnectionThread() {
-
         this.server = true;
     }
 
     public ConnectionThread(String btDevAddress) {
-
         this.server = false;
         this.btDevAddress = btDevAddress;
+    }
+
+    public void setHandler( Handler handler ) {
+        this.handler = handler;
     }
 
     public void run() {
@@ -100,11 +108,15 @@ public class ConnectionThread extends Thread{
 
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 toMainActivity("---N".getBytes());
             }
         }
+        if ( running ) {
+            cancel();
+        }
+        finished();
 
     }
 
@@ -112,9 +124,10 @@ public class ConnectionThread extends Thread{
 
         Message message = new Message();
         Bundle bundle = new Bundle();
+        bundle.putInt( ACTION_FIELD, START_ACTION );
         bundle.putByteArray("data", data);
         message.setData(bundle);
-        SeminarDetailsActivity.handler.sendMessage(message);
+        handler.sendMessage(message);
     }
 
 
@@ -123,12 +136,20 @@ public class ConnectionThread extends Thread{
         if(output != null) {
             try {
                 output.write(data);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             toMainActivity("---N".getBytes());
         }
+    }
+
+    private void finished() {
+        Message message = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putInt( ACTION_FIELD, FINISH_ACTION );
+        message.setData(bundle);
+        handler.sendMessage(message);
     }
 
     public void cancel() {
@@ -143,7 +164,7 @@ public class ConnectionThread extends Thread{
             if(btSocket != null) {
                 btSocket.close();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
