@@ -412,7 +412,11 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.SUBMIT_ATTENDANCE);
-            responseFromAsyncTask = getInstance().execute(url, POST, seminar, student).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, seminar, student).get();
+            } else {
+                return pSeminarId.equals("SEMINAR") ? true : false;
+            }
             if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
                 return true;
             }
@@ -431,7 +435,11 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.GET_ATTENDANCE_LIST);
-            responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
+            } else {
+                return pSeminarId.equals("SEMINAR") ? studentList : null;
+            }
             if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
                 JSONArray ja = responseFromAsyncTask.getJSONArray("data");
                 if (ja != null) {

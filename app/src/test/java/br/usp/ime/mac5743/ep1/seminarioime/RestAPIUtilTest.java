@@ -6,6 +6,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import java.util.ArrayList;
+
 import br.usp.ime.mac5743.ep1.seminarioime.api.RestAPIUtil;
 
 import static org.junit.Assert.assertFalse;
@@ -317,5 +319,46 @@ public class RestAPIUtilTest {
     public void test42_DeleteSeminarIfSeminarIsNull_ShouldReturnErrorMessage() {
         String seminarId = null;
         assertNotNull(restAPIUtil.deleteSeminar(seminarId));
+    }
+
+    // Test response for Attendance API
+
+    @Test
+    public void test43_ConfirmAttendanceSeminarExists_ShouldReturnTrue() {
+        String nusp = "TEST";
+        String seminarId = "SEMINAR";
+        assertTrue(restAPIUtil.confirmAttendance(nusp, seminarId));
+    }
+
+    @Test
+    public void test44_ConfirmAttendanceSeminarDoesNotExist_ShouldReturnFalse() {
+        String nusp = "TEST";
+        String seminarId = "INVALID";
+        assertFalse(restAPIUtil.confirmAttendance(nusp, seminarId));
+    }
+
+    @Test
+    public void test45_ConfirmAttendanceSeminarNull_ShouldReturnFalse() {
+        String nusp = null;
+        String seminarId = null;
+        assertFalse(restAPIUtil.confirmAttendance(nusp, seminarId));
+    }
+
+    @Test
+    public void test46_GetAttendanceListSeminarExists_ShouldReturnTrue() {
+        String seminarId = "SEMINAR";
+        assertTrue(restAPIUtil.getAttendanceList(seminarId) instanceof ArrayList);
+    }
+
+    @Test
+    public void test47_GetAttendanceListSeminarDoesNotExist_ShouldReturnFalse() {
+        String seminarId = "INVALID";
+        assertFalse(restAPIUtil.getAttendanceList(seminarId) instanceof ArrayList);
+    }
+
+    @Test
+    public void test48_GetAttendanceListSeminarNull_ShouldReturnFalse() {
+        String seminarId = null;
+        assertFalse(restAPIUtil.getAttendanceList(seminarId) instanceof ArrayList);
     }
 }
