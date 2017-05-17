@@ -23,7 +23,7 @@ public class ConnectionThread extends Thread{
     private InputStream input = null;
     private OutputStream output = null;
     private String btDevAddress = null;
-    private final String myUUID = "00001101-0000-1000-8000-00805F9B34FB";
+    private final String myUUID = "98761101-0000-1020-8000-00805F9B34FB";
     boolean server;
     boolean running = false;
     private Handler handler;
