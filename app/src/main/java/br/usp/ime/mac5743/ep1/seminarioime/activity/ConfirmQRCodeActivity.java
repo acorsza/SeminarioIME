@@ -1,9 +1,6 @@
 package br.usp.ime.mac5743.ep1.seminarioime.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TextView;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
@@ -22,7 +19,6 @@ public class ConfirmQRCodeActivity extends MenuActivity {
 
         Bundle b = getIntent().getExtras();
 
-        String ok = b.getString( OK_FIELD );
         String msg = b.getString( MESSAGE_FIELD );
         String seminarId = b.getString( SEMINAR_ID );
 
@@ -32,7 +28,9 @@ public class ConfirmQRCodeActivity extends MenuActivity {
             String successMessage = getString(R.string.ok_qrcode_message );
             tv.setText( String.format( successMessage, seminarId ) );
         } else {
-            tv.setText( msg );
+            if ( msg!= null ) {
+                tv.setText(String.format(msg, seminarId));
+            }
         }
     }
 
