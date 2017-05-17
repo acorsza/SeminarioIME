@@ -130,7 +130,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
                 startActivityForResult(enableBtIntent, ENABLE_BLUETOOTH);
                 Snackbar.make(view, "Solicitando ativação do BluetoothActivity...", Snackbar.LENGTH_LONG).show();
             } else {
-                Snackbar.make(view, "BluetoothActivity já ativado :)", Snackbar.LENGTH_LONG).show();
+                Toast.makeText( this, "BluetoothActivity já ativado :)", Toast.LENGTH_LONG).show();
                 searchPairedDevices(view);
             }
         }

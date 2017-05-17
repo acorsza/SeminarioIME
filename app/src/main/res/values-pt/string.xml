@@ -98,7 +98,7 @@
 
     <!-- Roles -->
     <string-array name="roles">
-        <item>Student</item>
+        <item>Aluno</item>
         <item>Professor</item>
     </string-array>
 </resources>
