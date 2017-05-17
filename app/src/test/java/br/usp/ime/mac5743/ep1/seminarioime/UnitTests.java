@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class RestAPIUtilTest {
+public class UnitTests {
 
     private static RestAPIUtil restAPIUtil;
 
