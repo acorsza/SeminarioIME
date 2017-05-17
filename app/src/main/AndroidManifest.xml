@@ -26,7 +26,8 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
         <activity android:name=".activity.EditAccountActivity" />
         <activity android:name=".activity.SeminarDetailsActivity" />
         <activity android:name=".activity.ReadQRCodeActivity" />
