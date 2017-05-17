@@ -39,6 +39,14 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
     private static final String GET = "GET";
     private static final String POST = "POST";
+    private static boolean isTesting = false;
+
+    public RestAPIUtil(boolean pIsTesting) {
+        isTesting = pIsTesting;
+    }
+
+    public RestAPIUtil() {
+    }
 
     /**
      * Login APIs
@@ -56,12 +64,16 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
             } else {
                 url = new URL(RestRoutes.LOGIN_STUDENT);
             }
-            responseFromAsyncTask = getInstance().execute(url, POST, student).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, student).get();
+            } else {
+                return pNusp.equals("TEST") ? true : false;
+            }
+
             if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
         return false;
@@ -75,9 +87,13 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         URL url;
         try {
             url = new URL(RestRoutes.GET_ALL_STUDENTS);
-            return getInstance().execute(url, GET).get();
+            if (!isTesting) {
+                return getInstance().execute(url, GET).get();
+            } else {
+                JSONObject student = new JSONObject();
+                return student;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -86,9 +102,13 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         URL url;
         try {
             url = new URL(String.format(RestRoutes.GET_STUDENT, pNusp));
-            return getInstance().execute(url, GET).get();
+            if (!isTesting) {
+                return getInstance().execute(url, GET).get();
+            } else {
+                JSONObject student = new JSONObject();
+                return pNusp.equals("TEST") ? student : null;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -100,13 +120,19 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.ADD_STUDENT);
-            responseFromAsyncTask = getInstance().execute(url, POST, student).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, student).get();
+            } else {
+                return pNusp.equals("TEST") ? null : "Error";
+            }
             if (responseFromAsyncTask != null && !responseFromAsyncTask.getBoolean("success")) {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            if (e.getMessage() != null) {
+                return e.getMessage();
+            }
+            return e.toString();
         }
         return null;
     }
@@ -118,13 +144,19 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.EDIT_STUDENT);
-            responseFromAsyncTask = getInstance().execute(url, POST, student).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, student).get();
+            } else {
+                return pNusp.equals("TEST") ? null : "Error";
+            }
             if (responseFromAsyncTask != null && !responseFromAsyncTask.getBoolean("success")) {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            if (e.getMessage() != null) {
+                return e.getMessage();
+            }
+            return e.toString();
         }
         return null;
     }
@@ -137,13 +169,19 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.DELETE_STUDENT);
-            responseFromAsyncTask = getInstance().execute(url, POST, student).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, student).get();
+            } else {
+                return pNusp.equals("TEST") ? null : "Error";
+            }
             if (responseFromAsyncTask != null && !responseFromAsyncTask.getBoolean("success")) {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            if (e.getMessage() != null) {
+                return e.getMessage();
+            }
+            return e.toString();
         }
         return null;
     }
@@ -156,9 +194,13 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         URL url;
         try {
             url = new URL(RestRoutes.GET_ALL_PROFESSORS);
-            return getInstance().execute(url, GET).get();
+            if (!isTesting) {
+                return getInstance().execute(url, GET).get();
+            } else {
+                JSONObject professor = new JSONObject();
+                return professor;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -167,9 +209,13 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         URL url;
         try {
             url = new URL(String.format(RestRoutes.GET_PROFESSOR, pNusp));
-            return getInstance().execute(url, GET).get();
+            if (!isTesting) {
+                return getInstance().execute(url, GET).get();
+            } else {
+                JSONObject professor = new JSONObject();
+                return pNusp.equals("TEST") ? professor : null;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -181,13 +227,19 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.ADD_PROFESSOR);
-            responseFromAsyncTask = getInstance().execute(url, POST, professor).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, professor).get();
+            } else {
+                return pNusp.equals("TEST") ? null : "Error";
+            }
             if (responseFromAsyncTask != null && !responseFromAsyncTask.getBoolean("success")) {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            if (e.getMessage() != null) {
+                return e.getMessage();
+            }
+            return e.toString();
         }
         return null;
     }
@@ -199,13 +251,19 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.EDIT_PROFESSOR);
-            responseFromAsyncTask = getInstance().execute(url, POST, professor).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, professor).get();
+            } else {
+                return pNusp.equals("TEST") ? null : "Error";
+            }
             if (responseFromAsyncTask != null && !responseFromAsyncTask.getBoolean("success")) {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            if (e.getMessage() != null) {
+                return e.getMessage();
+            }
+            return e.toString();
         }
         return null;
     }
@@ -218,13 +276,19 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.DELETE_PROFESSOR);
-            responseFromAsyncTask = getInstance().execute(url, POST, professor).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, professor).get();
+            } else {
+                return pNusp.equals("TEST") ? null : "Error";
+            }
             if (responseFromAsyncTask != null && !responseFromAsyncTask.getBoolean("success")) {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            if (e.getMessage() != null) {
+                return e.getMessage();
+            }
+            return e.toString();
         }
         return null;
     }
@@ -237,7 +301,12 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         URL url;
         try {
             url = new URL(RestRoutes.GET_ALL_SEMINARS);
-            return getInstance().execute(url, GET).get();
+            if (!isTesting) {
+                return getInstance().execute(url, GET).get();
+            } else {
+                JSONObject seminars = new JSONObject();
+                return seminars;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -248,9 +317,13 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
         URL url;
         try {
             url = new URL(String.format(RestRoutes.GET_SEMINAR, pSeminarId));
-            return getInstance().execute(url, GET).get();
+            if (!isTesting) {
+                return getInstance().execute(url, GET).get();
+            } else {
+                JSONObject professor = new JSONObject();
+                return pSeminarId.equals("TEST") ? professor : null;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -262,12 +335,16 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.ADD_SEMINAR);
-            responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
+            } else {
+                return pSeminarName.equals("SEMINAR") ? true : false;
+            }
             if (responseFromAsyncTask != null && responseFromAsyncTask.getBoolean("success")) {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
         return false;
     }
@@ -279,13 +356,19 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.EDIT_SEMINAR);
-            responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
+            } else {
+                return pSeminarId.equals("SEMINAR") ? null : "Error";
+            }
             if (responseFromAsyncTask != null && !responseFromAsyncTask.getBoolean("success")) {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            if (e.getMessage() != null) {
+                return e.getMessage();
+            }
+            return e.toString();
         }
         return null;
     }
@@ -298,13 +381,19 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
 
         try {
             url = new URL(RestRoutes.DELETE_SEMINAR);
-            responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
+            if (!isTesting) {
+                responseFromAsyncTask = getInstance().execute(url, POST, seminar).get();
+            } else {
+                return pSeminarId.equals("SEMINAR") ? null : "Error";
+            }
             if (responseFromAsyncTask != null && !responseFromAsyncTask.getBoolean("success")) {
                 return responseFromAsyncTask.getString("message");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            if (e.getMessage() != null) {
+                return e.getMessage();
+            }
+            return e.toString();
         }
         return null;
     }
@@ -328,7 +417,7 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
         return false;
     }
@@ -456,7 +545,6 @@ public class RestAPIUtil extends AsyncTask<Object, Void, JSONObject> {
                 OutputStream os = connection.getOutputStream();
                 os.write(outputBytes);
             }
-
 
 
             BufferedReader reader = new BufferedReader(
