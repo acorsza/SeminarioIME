@@ -15,24 +15,26 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name=".activity.LoginActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.RegisterActivity" android:screenOrientation="portrait" />
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".activity.EditAccountActivity" />
-        <activity android:name=".activity.SeminarDetailsActivity" />
-        <activity android:name=".activity.ReadQRCodeActivity" />
-        <activity android:name=".activity.ConfirmQRCodeActivity" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.EditAccountActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activity.SeminarDetailsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activity.ReadQRCodeActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activity.ConfirmQRCodeActivity" android:screenOrientation="portrait" />
         <activity android:name=".activity.ShowQRCodeActivity" android:screenOrientation="portrait" />
-        <activity android:name=".bluetooth.BluetoothActivity" />
+        <activity android:name=".bluetooth.BluetoothActivity" android:screenOrientation="portrait" />
     </application>
 
 </manifest>
