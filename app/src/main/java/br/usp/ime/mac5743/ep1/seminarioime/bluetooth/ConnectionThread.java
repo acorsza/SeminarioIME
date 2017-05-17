@@ -65,7 +65,6 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
-                toMainActivity("---N".getBytes());
             }
 
         } else {
@@ -84,33 +83,38 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
-                toMainActivity("---N".getBytes());
             }
 
         }
 
         if(btSocket != null) {
 
-            toMainActivity("---S".getBytes());
+
 
             try {
 
                 input = btSocket.getInputStream();
                 output = btSocket.getOutputStream();
-
-                byte[] buffer = new byte[1024];
-                int bytes;
-
-                while(running) {
-
-                    bytes = input.read(buffer);
-                    toMainActivity(Arrays.copyOfRange(buffer, 0, bytes));
-
-                }
-
             } catch (Exception e) {
                 e.printStackTrace();
-                toMainActivity("---N".getBytes());
+            }
+            if ( input != null && output != null ) {
+                toMainActivity("---S".getBytes());
+
+                try {
+                    byte[] buffer = new byte[1024];
+                    int bytes;
+
+                    while (running) {
+
+                        bytes = input.read(buffer);
+                        toMainActivity(Arrays.copyOfRange(buffer, 0, bytes));
+
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         if ( running ) {
@@ -138,9 +142,10 @@ public class ConnectionThread extends Thread{
                 output.write(data);
             } catch (Exception e) {
                 e.printStackTrace();
+                cancel();
             }
         } else {
-            toMainActivity("---N".getBytes());
+            cancel();
         }
     }
 

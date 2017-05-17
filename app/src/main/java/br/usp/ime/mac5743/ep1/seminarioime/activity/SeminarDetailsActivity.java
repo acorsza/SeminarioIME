@@ -25,7 +25,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import br.usp.ime.mac5743.ep1.seminarioime.R;
@@ -44,7 +43,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     private ArrayList<Student> studentList;
     private RecyclerView studentListView;
     private StudentListAdapter studentCardListAdapter;
-
+    private static WeakReference<SeminarDetailsActivity> myClassWeakReference;
 
     int ENABLE_BLUETOOTH = 1;
     int SELECT_PAIRED_DEVICE = 2;
@@ -53,7 +52,6 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     private TextView tvSeminarCounter;
     Button cancelBtn;
     Button startListeningBtn;
-    //    private ConnectionThread connect;
     SharedPreferences sharedPref;
 
     private boolean isListening = false;
@@ -85,6 +83,8 @@ public class SeminarDetailsActivity extends AppCompatActivity {
             LinearLayout ln2 = (LinearLayout) findViewById(R.id.student_actions_layout);
             ln2.setVisibility(View.VISIBLE);
         }
+
+        myClassWeakReference = new WeakReference<>(this);
     }
 
     private void setSeminarDateToUI() {
@@ -146,22 +146,15 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == ENABLE_BLUETOOTH) {
-            if (resultCode == RESULT_OK) {
-                //statusMessage.setText("BluetoothActivity ativado :)");
-            } else {
+            if (resultCode != RESULT_OK) {
                 Toast.makeText(this, getString(R.string.bluetooth_is_off), Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == SELECT_PAIRED_DEVICE) {
             if (resultCode == RESULT_OK) {
-                //statusMessage.setText("Você selecionou " + data.getStringExtra("btDevName") + "\n"
-                //         + data.getStringExtra("btDevAddress"));
-
                 ConnectionThread connect = new ConnectionThread(data.getStringExtra("btDevAddress"));
-                connect.setHandler(new MyHandler(this, connect));
+                connect.setHandler(new MyHandler(connect));
                 connections.add(connect);
                 connect.start();
-            } else {
-                //statusMessage.setText("Nenhum dispositivo selecionado :(");
             }
         }
 
@@ -172,16 +165,26 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         startActivityForResult(searchPairedDevicesIntent, SELECT_PAIRED_DEVICE);
     }
 
+    private static void refreshStudentsView( SeminarDetailsActivity activity ) {
+        activity.setStudentsList();
+        activity.studentCardListAdapter.setStudents(activity.studentList);
+        activity.studentListView = (RecyclerView) activity.findViewById(R.id.seminar_attendance_list);
+        activity.studentListView.setAdapter(activity.studentCardListAdapter);
+        activity.tvSeminarCounter = (TextView) activity.findViewById(R.id.seminar_counter);
+        if (activity.studentList != null) {
+            activity.tvSeminarCounter.setText(String.format(activity.getString(R.string.total_students_confirmed), activity.studentList.size() ));
+        } else {
+            activity.tvSeminarCounter.setText(activity.getString(R.string.zero_students_confirmed));
+        }
+
+    }
+
     private static class MyHandler extends Handler {
         private AppCompatActivity activity;
         private ConnectionThread connection;
-        private final WeakReference<SeminarDetailsActivity> myClassWeakReference;
 
-        public MyHandler(SeminarDetailsActivity activity, ConnectionThread connection) {
-
-            this.activity = activity;
+        private MyHandler(ConnectionThread connection) {
             this.connection = connection;
-            myClassWeakReference = new WeakReference<SeminarDetailsActivity>(activity);
         }
 
         @Override
@@ -193,54 +196,48 @@ public class SeminarDetailsActivity extends AppCompatActivity {
             byte[] data = bundle.getByteArray("data");
             String string = null;
             if (data != null) string = new String(data);
-            SeminarDetailsActivity activity = myClassWeakReference.get();
-            if (activity.sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
-//                if (string != null) {
-                if (ConnectionThread.INIT_CONNECTION.equals(string)) {
-                    activity.restartBL();
-                } else if (bundle.getInt(ConnectionThread.ACTION_FIELD) == ConnectionThread.FINISH_ACTION) {
-                    activity.removeConnection(connection);
-                } else {
-                    if (string != null) {
-                        String[] dados = string.split(",");
-                        if (dados.length > 1 && activity.seminarId != null && activity.seminarId.equals(dados[1])) {
-                            if (RestAPIUtil.confirmAttendance(dados[0], activity.seminarId)) {
-                                activity.setStudentsList();
-                                activity.studentCardListAdapter.setStudents(activity.studentList);
-                                activity.studentListView = (RecyclerView) activity.findViewById(R.id.seminar_attendance_list);
-                                activity.studentListView.setAdapter(activity.studentCardListAdapter);
-                                activity.tvSeminarCounter = (TextView) activity.findViewById(R.id.seminar_counter);
-                                if (activity.studentList != null) {
-                                    activity.tvSeminarCounter.setText(String.format(activity.getString(R.string.student_confirmed), activity.studentList.size() + ""));
-                                } else {
-                                    activity.tvSeminarCounter.setText(activity.getString(R.string.zero_students_confirmed));
-                                }
-                                Toast.makeText(activity, String.format(activity.getString(R.string.student_confirmed), dados[0]), Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-
-                            Toast.makeText(activity, activity.getString(R.string.incorret_seminar), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    connection.cancel();
-                }
-//                }
-            } else if (activity.sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
-                if (string != null && !string.isEmpty()) {
+            if ( myClassWeakReference == null || myClassWeakReference.get() == null ) {
+                connection.cancel();
+            } else {
+                SeminarDetailsActivity activity = myClassWeakReference.get();
+                if (activity.sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
+                    //                if (string != null) {
                     if (ConnectionThread.INIT_CONNECTION.equals(string)) {
-                        activity.sendConfirmationAfterConnection(connection);
+                        activity.restartBL();
+                    } else if (bundle.getInt(ConnectionThread.ACTION_FIELD) == ConnectionThread.FINISH_ACTION) {
+                        activity.removeConnection(connection);
                     } else {
+                        if (string != null) {
+                            String[] dados = string.split(",");
+                            if (dados.length > 1 && activity.seminarId != null && activity.seminarId.equals(dados[1])) {
+                                if (RestAPIUtil.confirmAttendance(dados[0], activity.seminarId)) {
+                                    refreshStudentsView( activity );
+                                    Toast.makeText(activity, String.format(activity.getString(R.string.student_confirmed), dados[0]), Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+
+                                Toast.makeText(activity, activity.getString(R.string.incorret_seminar), Toast.LENGTH_SHORT).show();
+                            }
+                        }
                         connection.cancel();
                     }
-                } else if (bundle.getInt(ConnectionThread.ACTION_FIELD) == ConnectionThread.FINISH_ACTION) {
-                    activity.removeConnection(connection);
+                    //                }
+                } else if (activity.sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.STUDENT.name())) {
+                    if (string != null && !string.isEmpty()) {
+                        if (ConnectionThread.INIT_CONNECTION.equals(string)) {
+                            activity.sendConfirmationAfterConnection(connection);
+                        } else {
+                            connection.cancel();
+                        }
+                    } else if (bundle.getInt(ConnectionThread.ACTION_FIELD) == ConnectionThread.FINISH_ACTION) {
+                        activity.removeConnection(connection);
+                        refreshStudentsView( activity );
+                    }
                 }
             }
         }
 
     }
-
-//    private Handler handler = new MyHandler( this );
 
     private void setStudentsList() {
         ArrayList<JSONObject> arrayJo = RestAPIUtil.getAttendanceList(seminarId);
@@ -280,7 +277,6 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     }
 
     public void stopListeningBluetooth(View view) {
-//        connect.cancel();
         cancelConnections();
         cancelBtn.setVisibility(View.GONE);
         startListeningBtn.setVisibility(View.VISIBLE);
@@ -301,15 +297,13 @@ public class SeminarDetailsActivity extends AppCompatActivity {
     }
 
     public synchronized void restartBL() {
-//        connect.cancel();
         ConnectionThread connect = new ConnectionThread();
-        connect.setHandler(new MyHandler(this, connect));
+        connect.setHandler(new MyHandler(connect));
         connect.start();
         connections.add(connect);
     }
 
     public synchronized void removeConnection(ConnectionThread c) {
-//        connect.cancel();
         connections.remove(c);
     }
 
