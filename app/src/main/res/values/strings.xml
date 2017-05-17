@@ -87,8 +87,8 @@
     <string name="near_devices">Near devices</string>
     <string name="paired_devices">Paired devices</string>
     <string name="bluetooth_is_off">Bluetooth is off</string>
-    <string name="incorret_seminar">Aluno tentou confirmar no seminário errado</string>
-    <string name="student_confirmed">Aluno confirmado: %s</string>
+    <string name="incorret_seminar">Student confirmed in the wrong seminar</string>
+    <string name="student_confirmed">Student confirmed: %s</string>
     <string name="total_students_confirmed">%d are registered</string>
     <string name="zero_students_confirmed">0 Students</string>
     <!-- Roles -->

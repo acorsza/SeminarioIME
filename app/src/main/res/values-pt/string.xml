@@ -81,12 +81,20 @@
     <string name="ok_qrcode_message">Sucesso! Você acabou de confimar sua presença! (SeminarId: %s)</string>
     <string name="error_qrcode_message">Falha ao confirmar presença! (SeminarioId: %s)</string>
     <string name="qrcode_show_code">QRCode pronto! Aproxime o outro dispositivo.</string>
+    <string name="incorrect_qrcode_message">O QRCode lido não é o mesmo! (SeminarioId: %s)</string>
     <string name="stop_listening_bluetooth">Para de escutar Bluetooth</string>
 
     <string name="qr_code_title">QR Code</string>
     <string name="near_devices">Dispositivos próximos</string>
     <string name="paired_devices">Dispositivos pareados</string>
     <string name="bluetooth_is_off">Bluetooth está desligado</string>
+
+
+    <string name="incorret_seminar">Aluno tentou confirmar no seminário errado</string>
+    <string name="student_confirmed">Aluno confirmado: %s</string>
+    <string name="total_students_confirmed">%d estudantes foram confirmados para esse seminário</string>
+    <string name="zero_students_confirmed">0 estudantes foram confirmados para esse seminário</string>
+
 
     <!-- Roles -->
     <string-array name="roles">
