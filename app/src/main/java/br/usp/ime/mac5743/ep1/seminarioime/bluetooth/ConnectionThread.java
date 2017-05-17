@@ -44,7 +44,9 @@ public class ConnectionThread extends Thread{
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         if(this.server) {
+
             try {
+
                 btServerSocket = btAdapter.listenUsingRfcommWithServiceRecord("Super Bluetooth", UUID.fromString(myUUID));
                 btSocket = btServerSocket.accept();
 
@@ -55,6 +57,7 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
+                toMainActivity("---N".getBytes());
             }
 
         } else {
@@ -73,6 +76,7 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
+                toMainActivity("---N".getBytes());
             }
 
         }
@@ -98,6 +102,7 @@ public class ConnectionThread extends Thread{
 
             } catch (IOException e) {
                 e.printStackTrace();
+                toMainActivity("---N".getBytes());
             }
         }
 
@@ -121,6 +126,8 @@ public class ConnectionThread extends Thread{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            toMainActivity("---N".getBytes());
         }
     }
 

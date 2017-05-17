@@ -191,6 +191,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         }
     };
 
+
     private static void setStudentsList() {
         ArrayList<JSONObject> arrayJo = RestAPIUtil.getAttendanceList(seminarId);
         studentList = new ArrayList<>();
