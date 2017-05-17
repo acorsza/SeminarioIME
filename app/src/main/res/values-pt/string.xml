@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IME Seminario</string>
+
+    <!-- Buttons -->
+    <string name="btn_login">Login</string>
+    <string name="btn_register">Cadastrar</string>
+    <string name="btn_save">Salvar</string>
+
+    <!-- Labels -->
+    <string name="lbl_welcome">Bem-vindo ao IME Seminário</string>
+    <string name="lbl_registration">Cadastro</string>
+    <string name="lbl_edit_account">Editar informações da conta</string>
+
+    <!-- Hint -->
+    <string name="hint_nusp">NUSP</string>
+    <string name="hint_password">Senha</string>
+    <string name="hint_name">Nome</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="empty_fields_message">Os seguintes campos não podem ser vazios: </string>
+    <string name="navigation_drawer_open">Abrir Navigation Drawer</string>
+    <string name="navigation_drawer_close">Fechar Navigation Drawer</string>
+    <string name="action_settings">Configurações</string>
+    <string name="auto_connect">Conectar automaticamente na próxima vez</string>
+    <string name="registration_failed">Falha ao cadastrar.</string>
+    <string name="registration_succeeded">Cadastro efetuaco com sucesso.</string>
+    <string name="account_created">Sua conta foi criada com sucesso.</string>
+    <string name="ok">Ok</string>
+    <string name="seminars">Seminários</string>
+    <string name="account">Informações da conta</string>
+    <string name="edit_account">Editar Conta</string>
+    <string name="read_qrcode">Ler QRCode</string>
+    <string name="logoff">Logout</string>
+    <string name="login_successful">Bem-vindo ao IME Seminário.</string>
+    <string name="login_failed">Falha no Login. Por favor, verifique suas credenciais e conexão.</string>
+
+    <!-- Error messages -->
+    <string name="ERROR_API_S001">Ocorreu um erro ao adicionar um aluno. Mensagem de erro: %s</string>
+    <string name="ERROR_API_S002">Ocorreu um erro ao editar um aluno. Mensagem de erro: %s</string>
+    <string name="ERROR_API_S003">Ocorreu um erro ao excluir um aluno. Mensagem de erro: %s </string>
+    <string name="ERROR_API_S004">Ocorreu um erro ao obter um aluno. Mensagem de erro: %s</string>
+    <string name="ERROR_API_S005">Ocorreu um erro ao obter todos os alunos. Mensagem de erro: %s</string>
+
+    <string name="ERROR_API_P001">Ocorreu um erro ao adicionar um professor. Mensagem de erro: %s</string>
+    <string name="ERROR_API_P002">Ocorreu um erro ao editar um professor. Mensagem de erro: %s</string>
+    <string name="ERROR_API_P003">Ocorreu um erro ao excluir um professor. Mensagem de erro: %s </string>
+    <string name="ERROR_API_P004">Ocorreu um erro ao obter um professor. Mensagem de erro: %s</string>
+    <string name="ERROR_API_P005">Ocorreu um erro ao obter todos os professores. Mensagem de erro: %s</string>
+
+    <string name="ERROR_API_SEM001">Ocorreu um erro ao adicionar um seminário. Mensagem de erro: %s</string>
+    <string name="ERROR_API_SEM002">Ocorreu um erro ao editar um seminário. Mensagem de erro: %s</string>
+    <string name="ERROR_API_SEM003">Ocorreu um erro ao excluir um seminário. Mensagem de erro: %s </string>
+    <string name="ERROR_API_SEM004">Ocorreu um erro ao obter um seminário. Mensagem de erro: %s</string>
+    <string name="ERROR_API_SEM005">Ocorreu um erro ao obter todos os seminários. Mensagem de erro: %s</string>
+
+    <string name="ERROR_API_ATT001">Ocorreu um erro ao obter todos os alunos para um seminário. Mensagem de erro: %s</string>
+
+    <string name="edit_account_failed">Falha ao editar conta.</string>
+    <string name="edit_account_success">Conta atualizada com sucesso.</string>
+    <string name="lbl_registration_invite">Não tem uma conta?</string>
+    <string name="registration_uspid_subtitle">Insira seu número USP</string>
+    <string name="registration_name_subtitle">Insira seu nome completo</string>
+    <string name="registration_password_subtitle">Senha deve ter no mínimo 6 caracteres</string>
+    <string name="registration_role_subtitle">Selecione sua funçao</string>
+    <string name="confirm_attendance_bluetooth">Confirmar presença por Bluetooth</string>
+    <string name="confirm_attendance_qrcode">Confirmar presença por QRCode</string>
+    <string name="student_counter">estudantes foram confirmados para esse seminário.</string>
+
+    <string name="seminar_add_title">Adicionar um seminário</string>
+    <string name="seminar_add_success">Seminário foi adicionado com sucesso.</string>
+    <string name="seminar_add_failed">Falha ao adicionar seminário.</string>
+    <string name="generate_qrcode">Gerar QRCode do Seminário</string>
+    <string name="listen_bluetooth_devices">Ouvir dispositivos Bluetooth</string>
+    <string name="attendance">Presença</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="qrcode">QRCode</string>
+
+    <string name="qrCode_label">QRCode</string>
+    <string name="qrcode_inititalization">Preparando para ler QRCode</string>
+    <string name="qrcode_permission_denied">Falha ao ler QRCode! O sistema precisa da permissão da câmera para fazer isso.</string>
+    <string name="ok_qrcode_message">Sucesso! Você acabou de confimar sua presença! (SeminarId: %s)</string>
+    <string name="error_qrcode_message">Falha ao confirmar presença! (SeminarioId: %s)</string>
+    <string name="qrcode_show_code">QRCode pronto! Aproxime o outro dispositivo.</string>
+    <string name="stop_listening_bluetooth">Para de escutar Bluetooth</string>
+
+    <string name="qr_code_title">QR Code</string>
+    <string name="near_devices">Dispositivos próximos</string>
+    <string name="paired_devices">Dispositivos pareados</string>
+    <string name="bluetooth_is_off">Bluetooth está desligado</string>
+
+    <!-- Roles -->
+    <string-array name="roles">
+        <item>Student</item>
+        <item>Professor</item>
+    </string-array>
+</resources>
