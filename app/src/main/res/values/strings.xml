@@ -79,6 +79,7 @@
     <string name="qrcode_permission_denied">Fail to read QRCode! The system needs cam permission to do it.</string>
     <string name="ok_qrcode_message">Successful! You have just confirmed your presence! (SeminarId: %s)</string>
     <string name="error_qrcode_message">Fail to confirm the presence! (SeminarId: %s)</string>
+    <string name="incorrect_qrcode_message">The QRCode read is not the same! (SeminarId: %s)</string>
     <string name="qrcode_show_code">QRCode ready! Bring the other device closer.</string>
     <string name="stop_listening_bluetooth">Stop listening Bluetooth</string>
 
@@ -86,7 +87,10 @@
     <string name="near_devices">Near devices</string>
     <string name="paired_devices">Paired devices</string>
     <string name="bluetooth_is_off">Bluetooth is off</string>
-
+    <string name="incorret_seminar">Aluno tentou confirmar no seminário errado</string>
+    <string name="student_confirmed">Aluno confirmado: %s</string>
+    <string name="total_students_confirmed">%d are registered</string>
+    <string name="zero_students_confirmed">0 Students</string>
     <!-- Roles -->
     <string-array name="roles">
         <item>Student</item>
