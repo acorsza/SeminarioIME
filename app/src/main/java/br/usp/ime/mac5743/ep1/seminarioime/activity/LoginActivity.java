@@ -51,6 +51,25 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean( "AUTOCONNECT", swAutoConnect.isChecked() );
+        savedInstanceState.putString("PASSWD", etPassword.getText().toString() );
+        savedInstanceState.putString( "NUSP", etNusp.getText().toString() );
+        savedInstanceState.putInt( "ROLE", spRole.getSelectedItemPosition() );
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        etNusp.setText(savedInstanceState.getString("NUSP"));
+        etPassword.setText(savedInstanceState.getString("PASSWD"));
+        spRole.setSelection( savedInstanceState.getInt("ROLE") );
+        swAutoConnect.setChecked( savedInstanceState.getBoolean("AUTOCONNECT") );
+    }
+
+
     public void requestLoginOnServer(View view) {
         if (view != null) {
             nusp = etNusp.getText().toString();
