@@ -89,27 +89,31 @@ public class SeminarDetailsActivity extends AppCompatActivity {
 
     private void setSeminarDateToUI() {
 
-        setStudentsList();
-
         tvSeminarName = (TextView) findViewById(R.id.seminar_title);
         tvSeminarCounter = (TextView) findViewById(R.id.seminar_counter);
 
         tvSeminarName.setText(seminarName);
-        if (studentList != null) {
-            tvSeminarCounter.setText(this.studentList.size() + " " + getString(R.string.student_counter));
-        } else {
-            tvSeminarCounter.setText("0 " + getString(R.string.student_counter));
+        try {
+            int seminarCount = RestAPIUtil.getAttendanceList(seminarId).size();
+            tvSeminarCounter.setText(seminarCount + " " + getString(R.string.student_counter));
+        } catch (Exception e) {
+            tvSeminarCounter.setText(seminarId);
         }
 
-        // Load seminars
-        studentListView = (RecyclerView) findViewById(R.id.seminar_attendance_list);
+        if (sharedPref.getString(Preferences.ROLE.name(), null).equalsIgnoreCase(Roles.PROFESSOR.name())) {
 
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
-        studentListView.setLayoutManager(mLinearLayoutManager);
+            setStudentsList();
 
-        studentCardListAdapter = new StudentListAdapter(studentList, this);
-        studentListView.setAdapter(studentCardListAdapter);
-        studentListView.refreshDrawableState();
+            // Load seminars
+            studentListView = (RecyclerView) findViewById(R.id.seminar_attendance_list);
+
+            LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+            studentListView.setLayoutManager(mLinearLayoutManager);
+
+            studentCardListAdapter = new StudentListAdapter(studentList, this);
+            studentListView.setAdapter(studentCardListAdapter);
+            studentListView.refreshDrawableState();
+        }
 
     }
 
@@ -165,14 +169,16 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         startActivityForResult(searchPairedDevicesIntent, SELECT_PAIRED_DEVICE);
     }
 
-    private static void refreshStudentsView( SeminarDetailsActivity activity ) {
+    private static void refreshStudentsView(SeminarDetailsActivity activity) {
+
         activity.setStudentsList();
         activity.studentCardListAdapter.setStudents(activity.studentList);
         activity.studentListView = (RecyclerView) activity.findViewById(R.id.seminar_attendance_list);
         activity.studentListView.setAdapter(activity.studentCardListAdapter);
         activity.tvSeminarCounter = (TextView) activity.findViewById(R.id.seminar_counter);
+
         if (activity.studentList != null) {
-            activity.tvSeminarCounter.setText(String.format(activity.getString(R.string.total_students_confirmed), activity.studentList.size() ));
+            activity.tvSeminarCounter.setText(String.format(activity.getString(R.string.total_students_confirmed), activity.studentList.size()));
         } else {
             activity.tvSeminarCounter.setText(activity.getString(R.string.zero_students_confirmed));
         }
@@ -196,7 +202,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
             byte[] data = bundle.getByteArray("data");
             String string = null;
             if (data != null) string = new String(data);
-            if ( myClassWeakReference == null || myClassWeakReference.get() == null ) {
+            if (myClassWeakReference == null || myClassWeakReference.get() == null) {
                 connection.cancel();
             } else {
                 SeminarDetailsActivity activity = myClassWeakReference.get();
@@ -211,7 +217,7 @@ public class SeminarDetailsActivity extends AppCompatActivity {
                             String[] dados = string.split(",");
                             if (dados.length > 1 && activity.seminarId != null && activity.seminarId.equals(dados[1])) {
                                 if (RestAPIUtil.confirmAttendance(dados[0], activity.seminarId)) {
-                                    refreshStudentsView( activity );
+                                    refreshStudentsView(activity);
                                     Toast.makeText(activity, String.format(activity.getString(R.string.student_confirmed), dados[0]), Toast.LENGTH_SHORT).show();
                                 }
                             } else {
@@ -231,7 +237,6 @@ public class SeminarDetailsActivity extends AppCompatActivity {
                         }
                     } else if (bundle.getInt(ConnectionThread.ACTION_FIELD) == ConnectionThread.FINISH_ACTION) {
                         activity.removeConnection(connection);
-                        refreshStudentsView( activity );
                     }
                 }
             }
