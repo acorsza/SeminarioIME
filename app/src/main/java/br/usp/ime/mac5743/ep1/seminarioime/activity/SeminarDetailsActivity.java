@@ -124,13 +124,13 @@ public class SeminarDetailsActivity extends AppCompatActivity {
         if (btAdapter == null) {
             Snackbar.make(view, "Que pena! Hardware BluetoothActivity não está funcionando :(", Snackbar.LENGTH_LONG).show();
         } else {
-            Snackbar.make(view, "Ótimo! Hardware BluetoothActivity está funcionando :)", Snackbar.LENGTH_LONG).show();
+//            Snackbar.make(view, "Ótimo! Hardware BluetoothActivity está funcionando :)", Snackbar.LENGTH_LONG).show();
             if (!btAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, ENABLE_BLUETOOTH);
-                Snackbar.make(view, "Solicitando ativação do BluetoothActivity...", Snackbar.LENGTH_LONG).show();
+//                Snackbar.make(view, "Solicitando ativação do BluetoothActivity...", Snackbar.LENGTH_LONG).show();
             } else {
-                Toast.makeText( this, "BluetoothActivity já ativado :)", Toast.LENGTH_LONG).show();
+//                Toast.makeText( this, "BluetoothActivity já ativado :)", Toast.LENGTH_LONG).show();
                 searchPairedDevices(view);
             }
         }
